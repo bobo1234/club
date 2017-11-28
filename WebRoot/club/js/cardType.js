@@ -18,7 +18,7 @@ function initFun() {
  * 获取列表
  */
 function findListInfo() {
-	var valu = $('input.search-val').val();
+	var valu = $('input.searchInput').val();
 	$.post(localhostUrl + 'mgr/cardList', {
 		searchInput : valu
 	}, function(data) {

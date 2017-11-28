@@ -45,7 +45,7 @@ function addMember() {
  * 获取会员列表信息
  */
 function findListInfo() {
-	var serVal = $('input.search-val').val();
+	var serVal = $('input.searchInput').val();
 	var sex = $('select.select-sex').val();
 	$.post(localhostUrl+'mgr/findMemberListInfo', {
 		serVal : serVal,

@@ -388,10 +388,10 @@ $(function() {
 			$(".input-group-btn button").click();
 		}
 	});
+	
 	$("div .search-val").keydown(function(event) {// 给输入框绑定按键事件
 		if (event.keyCode == "13") {// 判断如果按下的是回车键则执行下面的代码
 			$(this).next(".btn-primary").click();
-//			$(".input-group-btn button").click();
 		}
 	});
 
