@@ -30,7 +30,7 @@ public class MyTest extends RedisSpringProxy {
 //	}
 	@Test
 	public void redis() {
-		 flushDB();
+//		 flushDB();
 //		flushAll();
 		
 //		saveEx("keyEx", 1,100l);

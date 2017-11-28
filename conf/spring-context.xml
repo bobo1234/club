@@ -35,6 +35,8 @@
 		</property>
 	</bean>
 	
+	<import resource="spring-redis.xml"/>
+	
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
 		<property name="driverClass" value="${jdbc.driver}"></property>
 		<property name="jdbcUrl" value="${jdbc.url}"></property>

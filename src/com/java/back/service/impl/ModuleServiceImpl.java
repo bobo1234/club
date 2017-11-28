@@ -62,10 +62,10 @@ public class ModuleServiceImpl implements ModuleService {
 		if (CompareUtil.isEmpty(teAccount))
 			return JSONReturn.buildFailure(LoginState.UNLOGIN);
 		List<TeModule> moduleList = null;
-		if (teAccount.getAcctSuper())
-			moduleList=moduleDAO.findAllByOrderAsc("timestamp");
+//		if (teAccount.getAcctSuper())
+//			moduleList=moduleDAO.findAllByOrderAsc("timestamp");
 //			moduleList = moduleDAO.findAll();
-		else
+//		else
 			moduleList = moduleDAO.findMgrModule(acctName);
 		if (CollectionUtils.isEmpty(moduleList))
 			return JSONReturn.buildFailure("获取菜单失败!");

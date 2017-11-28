@@ -3,5 +3,6 @@ encoding//WebRoot/css/commone.css=UTF-8
 encoding//WebRoot/js/jquery.bigautocomplete.js=UTF-8
 encoding//WebRoot/modify_password.html=UTF-8
 encoding//conf/config.properties=UTF-8
+encoding//conf/redis.properties=UTF-8
 encoding//conf/spring-dubboProvider.xml=UTF-8
 encoding/<project>=UTF-8
