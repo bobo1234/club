@@ -13,6 +13,17 @@ reg.number = /^[1-9]\d*|[0]{1,1}$/;	// 正整数, 含0
 
 function initFun() {
 	alignmentFns.initialize();
+	
+	$(".card-type").change(function() {
+		var v=$(this).val();
+		if(v>0){
+			var data=ajax.json.get(localhostUrl+ '/mgr/findCardById?id='+v);
+			$("div.details-box h4").text($(this).find("option:selected").text());
+			setValueForForm(data.body);// 遍历表单元素,循环赋值
+			BootstrapDialog.showModel($('div.details-box'));
+		}
+	});
+	
 	if(!secure.find)  $('div.edit-employees-box').remove();
 	if(secure.find){
 		dialog = BootstrapDialog.loading();
