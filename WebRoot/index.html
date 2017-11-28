@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>系统首页</title>
+        <link type="text/css" rel="stylesheet" href="./css/bootstrap.min.css" />
+		<link type="text/css" rel="stylesheet" href="./css/bootstrap-dialog.min.css">
+        <link type="text/css" rel="stylesheet" href="./css/commone.css" />
+        <script type="text/javascript" src="./js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="./js/bootstrap-dialog.min.js"></script>
+        <script type="text/javascript" src="./js/common.js"></script>
+        <script type="text/javascript" src="./js/index.js"></script>
+        <!--[if lt IE 9]>
+            <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <script type="text/javascript">
+        var websocket;
+        var isCreatw = false;
+        var title="";
+        var win;
+        var input;
+        var isQj = true;
+        var toUser="";
+        $(function() {
+        	//initWebSocket();
+		});
+			function initWebSocket() {
+				if (window.WebSocket) {
+					websocket = new WebSocket(encodeURI('ws://'+wimadress));
+					
+					websocket.onopen = function() {
+						//连接成功
+						win.setTitle(title + '&nbsp;&nbsp;(已连接)   【现在全局对话】');
+						websocket.send('FHadminqq313596790'+user);
+					}
+					websocket.onerror = function() {
+						//连接失败
+						win.setTitle(title + '&nbsp;&nbsp;(连接发生错误)');
+					}
+					websocket.onclose = function() {
+						//连接断开
+						win.setTitle(title + '&nbsp;&nbsp;(已经断开连接)');
+					}
+					//消息接收
+					websocket.onmessage = function(message) {
+						var message = JSON.parse(message.data);
+						//接收用户发送的消息
+						if (message.type == 'message') {
+							output.receive(message);
+						} else if (message.type == 'get_online_user') {
+							//获取在线用户列表
+							var root = onlineUser.getRootNode();
+							Ext.each(message.list,function(user){
+								var node = root.createNode({
+									id : user,
+									text : user,
+									iconCls : 'user',
+									leaf : true
+								});
+								root.appendChild(node);
+							});
+						} else if (message.type == 'user_join') {
+							//用户上线
+								var root = onlineUser.getRootNode();
+								var user = message.user;
+								var node = root.createNode({
+									id : user,
+									text : user,
+									iconCls : 'user',
+									leaf : true
+								});
+								root.appendChild(node);
+						} else if (message.type == 'user_leave') {
+								//用户下线
+								var root = onlineUser.getRootNode();
+								var user = message.user;
+								var node = root.findChild('id',user);
+								root.removeChild(node);
+						}
+					}
+				}
+			};
+        </script>
+    </head>
+    <body>
+        <div class="nav navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+               <a href="./index.html" class="navbar-brand"><span class="glyphicon glyphicon-home"></span>&nbsp;首页</a>
+               <ul class="nav navbar-nav" id="nav-box-ul"></ul>
+               <ul class="nav navbar-nav pull-right">
+ <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span><span class="acctInfo"></span><b class="caret"></b></a><ul class="dropdown-menu"><li><a href="modify_password.html" data-toggle="modal" data-target="#modifyPassword" >修改密码</a></li><li><a href="#">我的</a></li><li><a href="#">Jasper Report</a></li></ul></li>
+                	<li><a href="javascript:void(0)" onclick="exit()"><span class="glyphicon glyphicon-log-out"></span>&nbsp;注销</a></li>
+               </ul>
+            </div>
+        </div>
+        
+        <div class="container main hide">
+            <div class="row">
+            	<ol class="breadcrumb"><li>首页</li></ol>
+				<div class="row main-page">
+				<!-- 内容 -->
+			<iframe width="420" scrolling="no" height="60" frameborder="0" allowtransparency="true" src="http://i.tianqi.com/index.php?c=code&id=12&icon=1&py=haidian&num=4&site=12"></iframe>
+
+			</div>
+            </div>
+        </div>
+        
+        <!--修改密码div  -->
+		<div class="modal fade" id="modifyPassword" tabindex="-1" role="dialog" aria-labelledby="modifyPasswordLabel" aria-hidden="true">
+			<div class="modal-dialog" style="width:400px;"><div class="modal-content"></div></div>
+		</div>
+        
+    </body>
+</html>

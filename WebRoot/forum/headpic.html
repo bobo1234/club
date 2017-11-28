@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title></title>
+<link type="text/css" rel="stylesheet" href="../css/bootstrap.min.css" />
+<link type="text/css" rel="stylesheet"
+	href="../css/bootstrap-dialog.min.css">
+<link type="text/css" rel="stylesheet" href="../css/commone.css" />
+<link type="text/css" rel="stylesheet"
+	href="../js/plugins/kindeditor-4.1.10/themes/default/default.css" />
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../js/bootstrap-dialog.min.js"></script>
+<script type="text/javascript" src="../js/bootstrap-pagy.min.js"></script>
+<script type="text/javascript"
+	src="../js/plugins/my97datepicker/WdatePicker.js"></script>
+<script type="text/javascript" src="../js/common.js"></script>
+
+<link href="../plugin/cropper/dist/cropper.min.css" rel="stylesheet">
+<link href="../plugin/cropper/examples/crop-avatar/css/main.css"
+	rel="stylesheet">
+<script type="text/javascript" src="../plugin/cropper/dist/cropper.js"></script>
+<script type="text/javascript"
+	src="../plugin/cropper/examples/crop-avatar/js/main.js"></script>
+<script type="text/javascript" src="./js/headpic.js"></script>
+
+  <style>
+        img{cursor: pointer;}
+        #pic{position: absolute; display: none;z-index: 99999}
+        #pic1{width: 60%; height: 60%; border-radius: 5px; -webkit-box-shadow: 5px 5px 5px 5px hsla(0,0%,5%,1.00); box-shadow: 5px 5px 5px 0px hsla(0,0%,5%,0.3); } 
+    </style>
+<!--[if lt IE 9]>
+            <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+</head>
+<body>
+	<div class="nav navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<a href="../index.html" class="navbar-brand"><span
+				class="glyphicon glyphicon-home"></span>&nbsp;首页</a>
+			<ul class="nav navbar-nav" id="nav-box-ul"></ul>
+			<ul class="nav navbar-nav pull-right">
+				<li class="dropdown"><a href="#" class="dropdown-toggle"
+					data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span><span
+						class="acctInfo"></span><b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li><a href="../modify_password.html" data-toggle="modal"
+							data-target="#modifyPassword">修改密码</a></li>
+						<li><a href="#">我的</a></li>
+						<li><a href="#">Jasper Report</a></li>
+					</ul></li>
+				<li><a href="javascript:void(0)" onclick="exit()"><span
+						class="glyphicon glyphicon-log-out"></span>&nbsp;注销</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="container main hide">
+		<div class="row">
+			<ol class="breadcrumb"></ol>
+			<div class="row main-page">
+				<div class="col-lg-8">
+					<div class="input-group"></div>
+					<!-- /input-group -->
+				</div>
+				<div class="col-lg-10">
+				<button type="button" class="btn btn-primary add-btn" data-toggle="modal"
+					data-target="#avatar-modal" style="margin: 10px;">
+					<span class="glyphicon glyphicon-open"></span>
+					上传图片</button>
+				<button type="button" class="btn btn-primary his-btn" style="margin: 10px;" onclick="showAddEmplBox()">
+					<span class="glyphicon glyphicon-time"></span>
+				 未启用图片</button>
+					
+				</div>
+			</div>
+	<div class="row imglist">
+	</div>		
+				
+			<div class="container" id="crop-avatar">
+				<div class="modal fade" id="avatar-modal" aria-hidden="true"
+					aria-labelledby="avatar-modal-label" role="dialog" tabindex="-1">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<form class="avatar-form" action="../mgr/HeadPicUpload"
+								enctype="multipart/form-data" method="post">
+								<div class="modal-header">
+									<button class="close" data-dismiss="modal" type="button">&times;</button>
+									<h4 class="modal-title" id="avatar-modal-label">上传图片</h4>
+								</div>
+								<div class="modal-body">
+									<div class="avatar-body">
+
+										<!-- Upload image and data -->
+										<div class="avatar-upload">
+											<input class="avatar-src" name="avatar_src" type="hidden">
+											<input class="avatar-data" name="avatar_data" type="hidden">
+											<label for="avatarInput" style="line-height: 35px;">图片上传</label>
+											<button class="btn btn-danger" type="button"
+												style="height: 35px;"
+												onclick="$('input[id=avatarInput]').click();">请选择图片</button>
+											<span id="avatar-name"></span> <input
+												class="avatar-input hide" id="avatarInput"
+												name="avatar_file" type="file">
+										</div>
+
+										<!-- Crop and preview -->
+										<div class="row">
+											<div class="col-md-9">
+												<div class="avatar-wrapper"></div>
+											</div>
+											<div class="col-md-3">
+												<div class="avatar-preview preview-lg"></div>
+												<br /> <br />
+												<div class="form-group">
+													<input class="form-control addtitle" placeholder="填写图片说明"></input>
+												</div>
+											</div>
+										</div>
+
+										<div class="row avatar-btns">
+											<div class="col-md-9">
+												<div class="btn-group">
+													<button class="btn btn-primary" data-method="rotate"
+														data-option="-90" type="button" title="Rotate -90 degrees">Rotate
+														Left</button>
+													<button class="btn btn-primary" data-method="reset"
+														data-option="reset" type="button"
+														title="Rotate reset degrees">reset</button>
+													<button class="btn btn-primary" data-method="destroy"
+														data-option="destroy" type="button"
+														title="Rotate reset degrees">destroy</button>
+													<button class="btn btn-primary" data-method="rotate"
+														data-option="-15" type="button">-15deg</button>
+													<button class="btn btn-primary" data-method="rotate"
+														data-option="-30" type="button">-30deg</button>
+													<button class="btn btn-primary" data-method="rotate"
+														data-option="-45" type="button">-45deg</button>
+												</div>
+												<div class="btn-group">
+													<button class="btn btn-primary" data-method="rotate"
+														data-option="90" type="button" title="Rotate 90 degrees">Rotate
+														Right</button>
+													<button class="btn btn-primary" data-method="rotate"
+														data-option="15" type="button">15deg</button>
+													<button class="btn btn-primary" data-method="rotate"
+														data-option="30" type="button">30deg</button>
+													<button class="btn btn-primary" data-method="rotate"
+														data-option="45" type="button">45deg</button>
+													<button class="btn btn-primary"
+														data-method="setAspectRatio"
+														data-option="1.7777777777777777" type="button">16:9</button>
+													<button class="btn btn-primary"
+														data-method="setAspectRatio"
+														data-option="1.3333333333333333" type="button">4:3</button>
+													<button class="btn btn-primary"
+														data-method="setAspectRatio" data-option="1" type="button">1:1</button>
+													<button class="btn btn-primary"
+														data-method="setAspectRatio" data-option="NaN"
+														type="button" title="free">free</button>
+												</div>
+											</div>
+											<div class="col-md-3">
+												<button class="btn btn-primary btn-block avatar-save"
+													data-method="getCropBoxData" data-option=""
+													data-target="#putData" type="button">
+													<span class="glyphicon glyphicon-saved"></span>
+													上传</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- <div class="modal-footer">
+              <button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+            </div> -->
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="loading" aria-label="Loading" role="img" tabindex="-1"></div>
+		</div>
+	</div>
+
+
+	<div class="modal fade" id="modifyPassword" tabindex="-1" role="dialog"
+		aria-labelledby="modifyPasswordLabel" aria-hidden="true">
+		<div class="modal-dialog" style="width:400px;">
+			<div class="modal-content"></div>
+		</div>
+	</div>
+	
+	
+	  <div class="modal fade add-empl-box bs-example-modal-lg">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+					<button class="close" data-dismiss="modal" type="button">×</button>
+					<h4 class="modal-title">图片列表</h4></div>
+					<div class="modal-body" style="max-height:450px; overflow-y:auto;">
+						<div class="tool">
+							<div class="input-group float-left">
+								<input type="text" class="form-control search-val" style="width:350px;" placeholder="请输标题" maxlength="64" />
+								<button class="btn btn-primary float-right" type="button" onclick="showAddEmplBox()"><span class="glyphicon glyphicon-search"></span>搜索</button>
+							</div><!-- /input-group -->
+							<div class="clear"></div>
+						</div>
+						<table class="table table-bordered table-hover margin-top-15">
+							<thead>
+								<th style="width:70px;">编号</th>
+								<th style="width:100px;">标题</th>
+								<th style="width:120px;">缩略图</th>
+								<th>操作</th>
+							</thead>
+							<tbody class="empl-list-tboal"></tbody>
+							
+							
+						</table>
+					</div> 
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" onclick="closeEmplListBox()">关闭</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+	
+
+</body>
+</html>

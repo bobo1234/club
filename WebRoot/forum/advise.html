@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title></title>
+        <link type="text/css" rel="stylesheet" href="./css/bootstrap.min.css" />
+		<link type="text/css" rel="stylesheet" href="./css/bootstrap-dialog.min.css">
+        <link type="text/css" rel="stylesheet" href="./css/commone.css" />
+        <script type="text/javascript" src="./js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="./js/bootstrap-dialog.min.js"></script>
+        <script type="text/javascript" src="./js/bootstrap-pagy.min.js"></script>
+        <script type="text/javascript" src="./js/common.js"></script>
+        <script type="text/javascript" src="./js/company_department.js"></script>
+        <!--[if lt IE 9]>
+            <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <div class="nav navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+               <a href="../index.html" class="navbar-brand"><span class="glyphicon glyphicon-home"></span>&nbsp;首页</a>
+               <ul class="nav navbar-nav" id="nav-box-ul"></ul>
+               <ul class="nav navbar-nav pull-right">
+                	<li class="dropdown">
+                	<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                	<span class="glyphicon glyphicon-user"></span>
+                	<span class="acctInfo"></span>
+					<b class="caret"></b>
+					</a>
+                	<ul class="dropdown-menu">
+					<li><a href="../modify_password.html" data-toggle="modal" data-target="#modifyPassword" >修改密码</a></li>
+					<li><a href="#">我的</a></li>
+					<li><a href="#">Jasper Report</a></li>
+				</ul>
+                	</li>
+				  <li><a href="javascript:void(0)" onclick="exit()"><span class="glyphicon glyphicon-log-out"></span>&nbsp;注销</a></li>
+               </ul>
+            </div>
+        </div>
+        <div class="container main hide">
+            <div class="row">
+           		<ol class="breadcrumb"></ol>
+           		<div class="row main-page">
+					<div class="col-lg-9"> 
+						<select class="form-control typeList select">
+						<option value="0">选择操作类型</option>
+						<option value="1">FIND</option>
+						<option value="2">DELETE</option>
+						<option value="3">MODIFY</option>
+						<option value="4">ADD</option>
+						<option value="5">LOGIN</option>
+						</select>
+						<select class="form-control userList select"></select>
+						<input type="text" class="form-control  date" placeholder="开始时间" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:new Date()});" id="begin_time"/>
+						<input type="text" class="form-control  date" placeholder="结束时间" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:new Date(),minDate:'#F{$dp.$D(\'begin_time\')}'});" id="end_time"/>
+						<div class="input-group">
+							<input type="text" class="form-control searchInput" name="searchInput" placeholder="描述" maxlength="124" value=""/>
+							<span class="input-group-btn"><button class="btn btn-primary" type="button" onclick="$.search()"><span class="glyphicon glyphicon-search"></span>搜索</button></span>
+						</div>
+					</div>
+					<div class="col-lg-2"></div>
+				</div>
+				<table class="table table-bordered table-hover" style="margin-top:20px;">
+					<thead>
+						<th style="width:70px;">编号</th>
+						<th >方法</th>
+						<th >描述</th>
+						<th >IP</th>
+						<th >类型</th>
+						<th >时间</th>
+						<th>操作</th>
+					</thead>
+					<tbody class="tbody"></tbody>
+				</table>
+				<nav id="pagination"><ul class="pagination"></ul></nav>
+				
+            </div>
+        </div>
+        
+        <div class="modal fade details-box sm-modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header"><h4 class="modal-title">操作日志详情</h4></div>
+					<div class="modal-body">
+						<table class="table table-bordered table-striped">
+							<tr><td class="si-key">ID: </td><td class="id"></td></tr>
+							<tr><td class="si-key">方法: </td><td class="method"></td></tr>
+							<tr><td class="si-key">描述: </td><td class="description"></td></tr>
+							<tr><td class="si-key">IP: </td><td class="requestIp"></td></tr>
+							<tr><td class="si-key">时间: </td><td class="createDate"></td></tr>
+							<tr><td class="si-key">类型: </td><td class="logType"></td></tr>
+							<tr><td class="si-key">参数: </td><td class="params"></td></tr>
+							<tr><td class="si-key">操作人: </td><td class="createByUserName"></td></tr>
+						</table>
+					</div> 
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					</div>
+				</div>
+			</div>
+       </div>
+       
+       
+		<div class="modal fade" id="modifyPassword" tabindex="-1" role="dialog" aria-labelledby="modifyPasswordLabel" aria-hidden="true">
+			<div class="modal-dialog" style="width:400px;"><div class="modal-content"></div></div>
+		</div>
+        
+    </body>
+</html>

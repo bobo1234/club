@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title>websocket</title>
+<link type="text/css" rel="stylesheet" href="./css/bootstrap.min.css" />
+<link type="text/css" rel="stylesheet"
+	href="./css/bootstrap-dialog.min.css">
+<link type="text/css" rel="stylesheet" href="./css/commone.css" />
+<script type="text/javascript" src="./js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="./js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./js/bootstrap-dialog.min.js"></script>
+<script type="text/javascript" src="./js/common.js"></script>
+<style type="text/css">  
+        #pop{   
+            width: 250px;   
+            height: 150px;   
+            border: 1px solid #fcc;   
+            background-color: #F5DEB3;   
+            position: absolute;   
+            right: 16px;   
+            bottom: -150px;   
+            display: none; 
+        }   
+    </style>  
+<script type="text/javascript">
+function fun() {   /* 弹出框从下往上慢慢升起,其中还包括了透明度的变化 */  
+    $("#pop").css("display", "block");   
+        $("#pop").animate({   
+            bottom: "16px",   
+            opacity:80  
+        },1500);   
+}   
+
+function fun2() {   /* 弹出框从上往下降下去 */   
+    $("#pop").css("display", "block");   
+        $("#pop").animate({   
+            bottom: "-150px",   
+            opacity: 0   
+        },1000);   
+}   
+</script>	
+
+</head>
+<body onload="fun()">
+	  
+ <div id="pop">
+
+        <a href="emlwdu" style="font-size: 18px">查看</a>
+
+       <div align="right">
+       <a href="java:void(0)" style="font-size: 18px;color: blue;" onclick="fun2()">关闭</a>
+       </div>   
+ </div>
+</body>
+</html>

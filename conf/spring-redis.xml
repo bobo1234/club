@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd  
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd 
+     http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd 
+     http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd 
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<!-- 配置JedisPoolConfig实例 -->
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxActive" value="${redis.maxActive}" />
+		<property name="maxIdle" value="${redis.maxIdle}" />
+		<property name="maxWait" value="${redis.maxWait}" />
+		<property name="testOnBorrow" value="${redis.testOnBorrow}" />
+	</bean>
+	<!-- 配置JedisConnectionFactory -->
+	<bean id="connectionFactory"
+		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<property name="hostName" value="${redis.host}" />
+		<property name="port" value="${redis.port}" />
+		<property name="timeout" value="${redis.timeout}"></property>
+		<property name="poolConfig" ref="jedisPoolConfig" />
+	</bean>
+
+
+	<!-- 配置RedisTemplate -->
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="keySerializer">
+			<bean
+				class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+		</property>
+		<property name="valueSerializer">
+			<bean
+				class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
+		</property>
+	</bean>
+
+	<!-- 启用缓存注解功能，这个是必须的，否则注解不会生效，另外，该注解一定要声明在spring主配置文件中才会生效,这个cacheManager 
+		必须指向redis配置里面的 RedisCacheManager -->
+	<cache:annotation-driven cache-manager="cacheManager" />
+
+	<!-- 配置缓存 by dada -->
+	<bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
+		<constructor-arg ref="redisTemplate" />
+		<!-- <property name="defaultExpiration" value="300"></property> <property 
+			name="usePrefix" value="true"></property> -->
+	</bean>
+
+	<!-- <bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager" 
+		c:template-ref="redisTemplate" /> -->
+
+
+</beans>

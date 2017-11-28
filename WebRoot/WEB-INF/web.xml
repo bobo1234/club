@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:javaee="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:jsp="http://java.sun.com/xml/ns/javaee/jsp" xmlns:web="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd http://xmlns.jcp.org/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.4">
+  <context-param>
+    <param-name>log4jConfigLocation</param-name>
+    <param-value>/WEB-INF/classes/log4j.properties</param-value>
+  </context-param>
+  <context-param>
+    <param-name>log4jRefreshInterval</param-name>
+    <param-value>600000</param-value>
+  </context-param>
+  
+   <!-- 配置log4j输出路径 -->
+  <context-param>
+    <param-name>webAppRootKey</param-name>
+    <param-value>webapp.root</param-value>
+  </context-param>
+  <listener>
+    <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+  </listener>
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:spring.xml</param-value>
+  </context-param>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  
+   <!-- 配置编码过滤器 -->
+  <filter>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <!-- 配置session过期时间 -->
+  <session-config>
+    <session-timeout>120</session-timeout>
+  </session-config>
+  
+  <!-- 配置SpringMVC -->
+  <servlet>
+    <servlet-name>spring</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:spring-context.xml</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>spring</servlet-name>
+    <url-pattern>/mgr/*</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+  
+  <!-- 配置系统初始化启动加载 -->
+  <servlet>
+    <servlet-name>test</servlet-name>
+    <servlet-class>com.java.back.init.InitServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+    <!-- 配置错误页面 -->
+  <error-page>
+    <error-code>404</error-code>
+    <location>/error/404.html</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/error/500.html</location>
+  </error-page>
+</web-app>

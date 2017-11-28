@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title></title>
+        <link type="text/css" rel="stylesheet" href="../css/bootstrap.min.css" />
+		<link type="text/css" rel="stylesheet" href="../css/bootstrap-dialog.min.css">
+        <link type="text/css" rel="stylesheet" href="../css/commone.css" />
+        <link type="text/css" rel="stylesheet" href="../js/plugins/kindeditor-4.1.10/themes/default/default.css" />
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="../js/bootstrap-dialog.min.js"></script>
+        <script type="text/javascript" src="../js/bootstrap-pagy.min.js"></script>
+        <script type="text/javascript" src="../js/plugins/my97datepicker/WdatePicker.js"></script>
+        <script type="text/javascript" src="../js/plugins/kindeditor-4.1.10/kindeditor-min.js"></script>
+        <script type="text/javascript" src="../js/plugins/kindeditor-4.1.10/zh_CN.js"></script>
+        <script type="text/javascript" src="../js/plugins/kindeditor-4.1.10/prettify.js"></script>
+        <script type="text/javascript" src="../js/kindeditor-upload-img.js"></script>
+        <script type="text/javascript" src="../plugin/num/js/num-alignment.js"></script>
+        
+        <script type="text/javascript" src="../js/common.js"></script>
+        
+        <script type="text/javascript" src="./js/member_info.js"></script>
+        <!--[if lt IE 9]>
+            <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]--> 
+    </head>
+    <body>
+        <div class="nav navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+               <a href="../index.html" class="navbar-brand"><span class="glyphicon glyphicon-home"></span>&nbsp;首页</a>
+               <ul class="nav navbar-nav" id="nav-box-ul"></ul>
+               <ul class="nav navbar-nav pull-right">
+ <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span><span class="acctInfo"></span><b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../modify_password.html" data-toggle="modal" data-target="#modifyPassword" >修改密码</a></li><li><a href="#">我的</a></li><li><a href="#">Jasper Report</a></li></ul></li>
+                	<li><a href="javascript:void(0)" onclick="exit()"><span class="glyphicon glyphicon-log-out"></span>&nbsp;注销</a></li>
+               </ul>
+            </div>
+        </div>
+        <div class="container main hide">
+        	<div class="row">
+	      		<ol class="breadcrumb"></ol>
+	       		<div class="new-table-box edit-employees-box hide">
+	       			<div style="line-height:48px;">
+	       				带 <span class="mandatory">*</span> 为必填项
+	       				<button type="button" class="btn btn-info td-add-btn float-right" onclick="saveOrModifyInfo()"><span class="glyphicon glyphicon-th"></span>保存或修改会员信息</button>
+	       			</div>
+	       			<form id="addForm">
+	       			<table class="table table-bordered">
+	       				<tr>
+	       					<td class="table-key"><span class="mandatory">*</span>姓名：</td>
+	       					<td class="table-val"><input type="text" class="width180 text realname" maxlength="18" name="realname" placeholder="姓名" /></td>
+	       					<td class="table-key"><span class="mandatory">*</span>性别：</td> 
+	       					<td class="table-val" colspan="4">
+	       						<label class="label"><input type="radio" class="sex" value="2" name="sex" /><span class="label-text float-left">男</span></label>
+	       						<label class="label"><input type="radio" class="sex" value="1" name="sex" /><span class="label-text float-left">女</span></label>
+	       					</td>
+	       				</tr>
+	       				<tr>
+	       					<td class="table-key"><span class="mandatory">*</span>手机号码：</td>
+	       					<td class="table-val" colspan="1" style="padding: 5px;"><input type="tel" name="phone" class="width180 text phone" maxlength="11" placeholder="手机号码"></td>
+	       					<td class="table-key">其他联系方式：</td>
+	       					<td class="table-val" colspan="4" style="padding: 5px;"><input type="text" class="width180 text contact" maxlength="128" placeholder="其他联系方式"></td>
+	       				</tr>
+	       				<tr>
+	       					<td class="table-key"><span class="mandatory">*</span>出生年月：</td>
+	       					<td class="table-val"><input type="month" class="width180 text date-before birthday" name="birthday" placeholder="出生年月" /></td>
+	       					<td class="table-key"><span class="mandatory">*</span>握拍方式：</td> 
+	       					<td class="table-val" colspan="4">
+	       						<label class="label"><input type="radio" class="griptype" value="2" name="griptype" /><span class="label-text float-left">横板</span></label>
+	       						<label class="label"><input type="radio" class="griptype" value="1" name="griptype" /><span class="label-text float-left">直板</span></label>
+	       					</td>
+	       				</tr>
+	       				
+	       				<tr id="membercard">
+	       					<td class="table-key">办理会员卡：</td>
+	       					<td class="table-val">
+	       					<select class="select card-type">
+	       					</select>
+	       					</td>
+	       					<td class="table-key">消费次数：</td> 
+	       					<td class="table-val" colspan="4">
+	       					<input id='b' class="form-control float-left ctimes"  name="ctimes" data-step="1" data-digit="0" data-min="0" value="0"/>
+	       					</td>
+	       				</tr>
+	       				<tr>
+	       					<td class="table-key">备注：</td>
+	       					<td class="table-val" colspan="7" style="padding: 5px;"><input type="text" class="width180 text note" maxlength="1024" name="remark" placeholder="备注信息"></td>
+	       				</tr>
+	       			</table>
+	       			</form>
+	       			
+	       			<div style="padding:10px; background:#fafafa; border:1px solid #ccc;"> 
+	       				1.此表作为俱乐部会员记录，将被用于会员管理,会员消费等相关事宜，请认真据实填写。<br />
+	       				2.此表由俱乐部前台填写，其间如有重要变更请及时通知前台修改。<br />
+	       				3:本俱乐部会员可凭借手机(必填)或者姓名进行消费
+	       			</div>
+	       		</div>
+        	</div>
+			
+       	</div>
+		<div class="modal fade" id="modifyPassword" tabindex="-1" role="dialog" aria-labelledby="modifyPasswordLabel" aria-hidden="true">
+			<div class="modal-dialog" style="width:400px;"><div class="modal-content"></div></div>
+		</div>
+    </body>
+</html>

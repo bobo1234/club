@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title></title>
+      <link type="text/css" rel="stylesheet" href="../css/bootstrap.min.css" />
+		<link type="text/css" rel="stylesheet" href="../css/bootstrap-dialog.min.css">
+        <link type="text/css" rel="stylesheet" href="../css/commone.css" />
+        <link type="text/css" rel="stylesheet" href="../js/plugins/kindeditor-4.1.10/themes/default/default.css" />
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="../js/bootstrap-dialog.min.js"></script>
+        <script type="text/javascript" src="../js/bootstrap-pagy.min.js"></script>
+        <script type="text/javascript" src="../js/plugins/my97datepicker/WdatePicker.js"></script>
+        <script type="text/javascript" src="../js/plugins/kindeditor-4.1.10/kindeditor-min.js"></script>
+        <script type="text/javascript" src="../js/plugins/kindeditor-4.1.10/zh_CN.js"></script>
+        <script type="text/javascript" src="../js/plugins/kindeditor-4.1.10/prettify.js"></script>
+        <script type="text/javascript" src="../js/kindeditor-upload-img.js"></script>
+        <script type="text/javascript" src="../plugin/num/js/num-alignment.js"></script>
+        <script type="text/javascript" src="../js/common.js"></script>
+        
+		<link rel="stylesheet" href="../css/jquery.bigautocomplete.css" type="text/css" />
+		<script type="text/javascript" src="../js/jquery.bigautocomplete.js"></script>
+        <script type="text/javascript" src="./js/consume.js"></script>
+        
+        
+        <!--[if lt IE 9]>
+            <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        
+        
+    </head>
+    <body>
+        <div class="nav navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+               <a href="../index.html" class="navbar-brand"><span class="glyphicon glyphicon-home"></span>&nbsp;首页</a>
+               <ul class="nav navbar-nav" id="nav-box-ul"></ul>
+               <ul class="nav navbar-nav pull-right">
+ <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span><span class="acctInfo"></span><b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../modify_password.html" data-toggle="modal" data-target="#modifyPassword" >修改密码</a></li><li><a href="#">我的</a></li><li><a href="#">Jasper Report</a></li></ul></li>
+                	<li><a href="javascript:void(0)" onclick="exit()"><span class="glyphicon glyphicon-log-out"></span>&nbsp;注销</a></li>
+               </ul>
+            </div>
+        </div>
+        <div class="container main hide">
+            <div class="row">
+	            <ol class="breadcrumb"></ol>
+				<div class="row main-page">
+					<div class="col-lg-8">
+					<select class="form-control card-type select"></select>
+						<select class="form-control ifuseless select">
+						<option value="0" >选择使用情况</option>
+						<option value="2">已使用</option>
+						<option value="1">未使用</option>
+						<option value="3">已用完</option>
+						<option value="4">已作废</option>
+						</select>
+						<div class="input-group">
+							<input type="text" class="form-control searchInput" name="searchInput" placeholder="名字,手机,首字母" maxlength="64" value="" />
+							<span class="input-group-btn"><button class="btn btn-primary" type="button" onclick="$.search()"><span class="glyphicon glyphicon-search"></span>搜索</button></span>
+						</div><!-- /input-group -->
+					</div>
+					<div class="col-lg-2"></div>
+					<div class="col-lg-2"><button type="button" class="btn btn-primary add-btn hide float-right" onclick="showAddBox()"><span class="glyphicon glyphicon-plus"></span>办理会员卡</button></div>
+				</div>
+				<table class="table table-bordered table-hover" style="margin-top:20px;">
+					<thead> 
+						<th style="width:50px;">编号</th>
+						<th style="width:110px;">名字</th>
+						<th style="width:120px;">手机号</th>
+						<th style="width:120px;">卡类名称</th>
+						<th style="width:140px;">办理时间</th>
+						<th style="width:90px;">剩余次数</th>
+						<th style="width:100px;">会员卡状态</th>
+						<th style="width:120px;">到期时间</th>
+						<th>操作</th>
+					</thead>
+					<tbody class="tbody"></tbody>
+				</table>
+				<nav id="pagination"><ul class="pagination"></ul></nav>
+				
+			</div>
+        </div>
+        
+        <div class="modal fade set-principal-box sm-modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header"><h4 class="modal-title">会员消费</h4></div>
+						<input type="hidden" id="mcdid" value=""/>
+					<div class="modal-body margin-top-15">
+						<form class="form-horizontal">
+					  <div class="form-group">
+					    <label for="lastname" class="col-sm-4 control-label">消费次数:</label>
+					    <div class="col-sm-7">
+					    	<input id='c' class="form-control float-left ctimes"  data-step="1" data-digit="0" data-min="1" value="1"/>
+					    	<span class="help-block">满足一卡多人消费的情况</span>
+					    </div>
+					  </div>
+					</form>
+						
+					</div> 
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+						<button type="button" class="btn btn-primary" onclick="consumCard()">确定</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade add-empl-box bs-example-modal-lg">
+			<div class="modal-dialog modal-md">
+				<div class="modal-content">
+					<div class="modal-header"><h4 class="modal-title">消费记录</h4></div>
+					<div class="modal-body" style="overflow-y:auto;">
+						<table class="table table-hover table-striped margin-top-15">
+							<thead>
+								<th style="width:70px;">编号</th>
+								<th style="width:100px;">消费时间</th>
+								<th style="width:100px;">消费次数</th>
+							</thead>
+							<tbody class="empl-list-tboal"></tbody>
+						</table>
+					</div> 
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	
+		 <div class="modal fade add-box sm-modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header"><h4 class="modal-title">办理会员卡</h4></div>
+					<div class="modal-body">
+					<form class="form-horizontal" id="membercard">
+					 <div class="form-group">
+					    <label for="firstname" class="col-sm-3 control-label">会员姓名:</label>
+					    <div class="col-sm-9">
+					      <input type="text" id="tt" class="form-control mname"  placeholder="请输入名字首字母" 	/>
+					      <input type="hidden" value="" class="memberid" />
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label for="firstname" class="col-sm-3 control-label">选择卡类:</label>
+					    <div class="col-sm-9">
+							<select class="form-control card-type" ></select>
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label for="lastname" class="col-sm-3 control-label">消费次数:</label>
+					    <div class="col-sm-9">
+					    <input type="number" name="usertimes" class="form-control float-left ctimes" min="0" value="1"/>	
+					    </div>
+					  </div> 
+					  
+					</form>
+					</div> 
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+						<button type="button" class="btn btn-primary" onclick="addMemberCard()">确定</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="modal fade details-box md-modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header"><h4 class="modal-title">卡类详情</h4></div>
+					<div class="modal-body">
+						<table class="table table-bordered table-striped">
+							<tr><td class="si-key">名称: </td><td class="typename"></td></tr>
+							<tr><td class="si-key">有效期(月): </td><td class="validtime"></td></tr>
+							<tr class="danger"><td class="si-key">价钱￥: </td><td class="price" style="font-weight:bold"></td></tr>
+							<tr><td class="si-key">创建时间: </td><td class="createtime"></td></tr>
+							<tr><td class="si-key">总次数: </td><td class="usertimes"></td></tr>
+							<tr><td class="si-key">描述: </td><td class="description"></td></tr>
+						</table>
+					</div> 
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="modal fade" id="modifyPassword" tabindex="-1" role="dialog" aria-labelledby="modifyPasswordLabel" aria-hidden="true">
+			<div class="modal-dialog" style="width:400px;"><div class="modal-content"></div></div>
+		</div>
+		
+    </body>
+</html>

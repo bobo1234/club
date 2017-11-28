@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title></title>
+        <link type="text/css" rel="stylesheet" href="../css/bootstrap.min.css" />
+		<link type="text/css" rel="stylesheet" href="../css/bootstrap-dialog.min.css">
+        <link type="text/css" rel="stylesheet" href="../css/commone.css" />
+        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="../js/bootstrap-dialog.min.js"></script>
+        <script type="text/javascript" src="../js/bootstrap-pagy.min.js"></script>
+        <script type="text/javascript" src="../js/common.js"></script>
+        <script type="text/javascript" src="./js/cardType.js"></script>
+		<script type="text/javascript" src="../plugin/num/js/num-alignment.js"></script>
+        <!--[if lt IE 9]>
+            <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <div class="nav navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+               <a href="../index.html" class="navbar-brand"><span class="glyphicon glyphicon-home"></span>&nbsp;首页</a>
+               <ul class="nav navbar-nav" id="nav-box-ul"></ul>
+               <ul class="nav navbar-nav pull-right">
+ <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span><span class="acctInfo"></span><b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../modify_password.html" data-toggle="modal" data-target="#modifyPassword" >修改密码</a></li><li><a href="#">我的</a></li><li><a href="#">Jasper Report</a></li></ul></li>
+                	<li><a href="javascript:void(0)" onclick="exit()"><span class="glyphicon glyphicon-log-out"></span>&nbsp;注销</a></li>
+               </ul>
+            </div>
+        </div>
+        <div class="container main hide">
+            <div class="row">
+           		<ol class="breadcrumb"></ol>
+				<div class="row main-page">
+					<div class="col-lg-8"> 
+					<div class="input-group">
+							<input type="text" class="form-control search-val" placeholder="请输入名称或描述" maxlength="64">
+							<span class="input-group-btn"><button class="btn btn-primary" type="button" onclick="$.search()"><span class="glyphicon glyphicon-search"></span>搜索</button></span>
+						</div>
+					</div>
+					<div class="col-lg-2"></div>
+					<div class="col-lg-2"><button type="button" class="btn btn-primary float-right add-btn hide" onclick="showAddBox()"><span class="glyphicon glyphicon-plus"></span>新增会员卡</button></div>
+				</div>
+				<table class="table table-bordered table-hover" style="margin-top:20px;">
+					<thead>
+						<th style="width:70px;">编号</th>
+						<th style="width:130px;">会员卡名称</th>
+						<th style="width:130px;">创建时间</th>
+						<th style="width:100px;">价钱</th>
+						<th style="width:100px;">总次数</th>
+						<th style="width:120px;">有效期</th>
+						<th style="width:120px;">卡数量</th>
+						<th>操作</th>
+					</thead>
+					<tbody class="tbody"></tbody>
+				</table>
+				<nav id="pagination"><ul class="pagination"></ul></nav>
+				
+            </div>
+        </div>
+
+  <!--      自定义类型：<input id="3" user_data="test" value="5"/><br><br>
+        不可编辑:<input id="1" class="alignment" value="15.1"/><br><br>
+        可编辑:<input class="alignment" data-edit="true" value="0" data-step="5" data-digit="0" /><br><br>
+	自定义数据：<input id="5" class="alignment" data-step="1" data-min="1" data-max="12" data-digit="0" value="1"/><br><br>
+	设置长度:<input id="6"  style="width:100px;" class="alignment" value="15.1"/>-->
+	
+	<script>
+		// 自定义类型：参数为数组，可多条数据
+	//	alignmentFns.createType([{"test": {"step" : 20, "min" : 10, "max" : 999, "digit" : 0}}]);
+		// 初始化
+		//alignmentFns.initialize();
+		// 销毁
+		//alignmentFns.destroy();
+		// js动态改变数据
+		//$("#4").attr("data-max", "12")
+		// 初始化
+		//alignmentFns.initialize();
+	</script>
+        <div class="modal fade add-box sm-modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header"><h4 class="modal-title">添加会员卡信息</h4></div>
+					<div class="modal-body">
+					<form class="form-horizontal" id="cardtype">
+					  <div class="form-group">
+					    <label for="firstname" class="col-sm-3 control-label">名称:</label>
+					    <div class="col-sm-9">
+					      <input type="text" class="form-control typename" name="typename" placeholder="请输入名称">
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label for="lastname" class="col-sm-3 control-label">有效期:</label>
+					    <div class="col-sm-9">
+					    	<input id='b' class="form-control float-left validtime"  name="validtime" data-step="1" data-digit="0" data-min="1" data-max="12" value="1"/>
+					    	<span class="help-block">自会员卡创办日期开始计算,逾期自动作废,单位:(月)</span>
+					    	
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label for="lastname" class="col-sm-3 control-label">总次数:</label>
+					    <div class="col-sm-9">
+					    <input id='a' type="number" name="usertimes" class="form-control float-left usertimes" min="0" />	
+					     <span class="help-block">如果次数为0,则只能本人消费,并且每次消费一次</span>
+					     
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label for="lastname" class="col-sm-3 control-label">价钱:</label>
+					    <div class="col-sm-9">
+					   <div class="input-group">
+						<span class="input-group-addon">$</span>
+						<input type="number" class="form-control price" min="0" name="price" step="10"/>
+						<span class="input-group-addon">.00</span>
+						</div>
+					    </div>
+					  </div>
+					 
+					  <div class="form-group">
+					    <label for="lastname" class="col-sm-3 control-label">描述:</label>
+					    <div class="col-sm-9">
+						<textarea class="form-control resize float-left describe" rows="3" name="description" placeholder="填写描述信息" maxlength="128"></textarea>
+					    
+					    </div>
+					  </div>
+					</form>
+						<div class="clear"></div>
+					</div> 
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+						<button type="button" class="btn btn-primary" onclick="addCard()">添加</button>
+					</div>
+				</div>
+			</div>
+		</div>
+        
+        <div class="modal fade modify-box sm-modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header"><h4 class="modal-title">修改会员卡信息</h4></div>
+					<div class="modal-body">
+					<form class="form-horizontal" id="modify-cardtype">
+					  <div class="form-group">
+					    <label for="firstname" class="col-sm-3 control-label">名称:</label>
+					    <div class="col-sm-9">
+					      <input type="text" class="form-control modify-typename" name="typename" placeholder="请输入名称">
+					      <input type="hidden" name="id" />
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label for="lastname" class="col-sm-3 control-label">有效期:</label>
+					    <div class="col-sm-9">
+					    	<input id='c' class="form-control float-left modify-validtime"  name="validtime" data-step="1" data-digit="0" data-min="1" data-max="12" value="1"/>
+					    	<span class="help-block">自会员卡创办日期开始计算,逾期自动作废,单位:(月)</span>
+					    	
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label for="lastname" class="col-sm-3 control-label">总次数:</label>
+					    <div class="col-sm-9">
+					    <input id='a' type="number" name="usertimes" class="form-control float-left modify-usertimes" min="0" />	
+					    <span class="help-block">如果次数为0,则只能本人消费,并且每次消费一次</span>
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label for="lastname" class="col-sm-3 control-label">价钱:</label>
+					    <div class="col-sm-9">
+					   <div class="input-group">
+						<span class="input-group-addon">$</span>
+						<input type="number" class="form-control modify-price" min="0" name="price" step="10" />
+						<span class="input-group-addon">.00</span>
+						</div>
+					    </div>
+					  </div>
+					 
+					  <div class="form-group">
+					    <label for="lastname" class="col-sm-3 control-label">描述:</label>
+					    <div class="col-sm-9">
+						<textarea class="form-control resize float-left modify-describe" rows="3" name="description" placeholder="填写描述信息" maxlength="128"></textarea>
+					    
+					    </div>
+					  </div>
+					</form>
+					
+						<div class="clear"></div>
+					</div> 
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+						<button type="button" class="btn btn-primary" onclick="modifyCard()">修改</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade details-box sm-modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header"><h4 class="modal-title">卡类详情</h4></div>
+					<div class="modal-body">
+						<table class="table table-bordered table-striped">
+							<tr><td class="si-key">名称: </td><td class="typename"></td></tr>
+							<tr><td class="si-key">有效期: </td><td class="validtime"></td></tr>
+							<tr><td class="si-key">价钱￥: </td><td class="price"></td></tr>
+							<tr><td class="si-key">创建时间: </td><td class="createtime"></td></tr>
+							<tr><td class="si-key">总次数: </td><td class="usertimes"></td></tr>
+							<tr><td class="si-key">描述: </td><td class="description"></td></tr>
+						</table>
+					</div> 
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="modal fade" id="modifyPassword" tabindex="-1" role="dialog" aria-labelledby="modifyPasswordLabel" aria-hidden="true">
+			<div class="modal-dialog" style="width:400px;"><div class="modal-content"></div></div>
+		</div>
+        
+    </body>
+</html>
