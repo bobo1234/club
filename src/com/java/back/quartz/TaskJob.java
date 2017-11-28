@@ -63,7 +63,7 @@ public class TaskJob {
 	}
 	
 	/**
-	 * 比赛今天即将开始的提醒
+	 * 比赛今天即将开始的提醒(针对已参加的会员)
 	 */
 	public void matchJob(){
 		System.out.println("定时任务每天8点执行=========");

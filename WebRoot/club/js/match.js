@@ -147,19 +147,22 @@ function modifyTraining() {
 	},'json');
 }
 
-/*
- * 解析操作按钮 
- *  
+/**
+ *  解析操作按钮 
+ * @param v
+ * @returns {String}
  */
 function analyzeBtns(v) {
 	var btns = "";
 	btns += secure.find ? "<button type='button' class='btn btn-success btn-xs' onclick='showRecord(\"" + v.id + "\","+v.state+")'><span class='glyphicon glyphicon-paperclip'></span>记录</button>" : "";
 	if(v.state==1){
+		btns += "<button type='button' class='btn btn-danger btn-xs' onclick='pushNotice(\"" + v.id + "\")'><span class='glyphicon glyphicon-phone'></span>推送</button>";
 		if (secure.modify) {
 			btns += "<button type='button' class='btn btn-primary btn-xs' onclick='showModify(\"" + v.id + "\")'><span class='glyphicon glyphicon-pencil'></span>编辑</button>";
 		}
 		btns += "<button type='button' class='btn btn-warning btn-xs' onclick='stop(\"" + v.id + "\")'><span class='glyphicon glyphicon-remove'></span>取消</button>";
 	}else{
+		btns += "<button type='button' disabled='disabled' class='btn btn-danger btn-xs' onclick='pushNotice(\"" + v.id + "\")'><span class='glyphicon glyphicon-phone'></span>推送</button>";
 		btns += "<button type='button' disabled='disabled' class='btn btn-primary btn-xs' onclick='showModify(\"" + v.id + "\")'><span class='glyphicon glyphicon-pencil'></span>编辑</button>";
 		btns += "<button type='button' disabled='disabled' class='btn btn-warning btn-xs' onclick='stop(\"" + v.id + "\")'><span class='glyphicon glyphicon-remove'></span>取消</button>";
 	}
@@ -169,6 +172,23 @@ function analyzeBtns(v) {
 	}else
 		btns += "<button type='button' disabled='disabled' class='btn btn-info btn-xs' onclick='recovery(\"" + v.id + "\")'><span class='glyphicon glyphicon-ok'></span>恢复</button>";
 	return btns;
+}
+
+/**
+ * 推送比赛消息
+ * @param id
+ */
+function pushNotice(id) {
+	if (!id) return;
+	BootstrapDialog.confirm("请确认是否推送?", function(result) {
+		if (!result) return;
+		dialog = BootstrapDialog.isSubmitted();
+		$.getJSON(localhostUrl+'mgr/pushNoticeMatch', {id : id}, function(data) {
+			dialog.close();
+			if (!$.isSuccess(data)) return;
+			BootstrapDialog.msg(data.body, BootstrapDialog.TYPE_SUCCESS);
+		});
+	});
 }
 
 /**
