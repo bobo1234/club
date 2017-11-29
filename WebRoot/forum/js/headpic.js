@@ -21,7 +21,7 @@ function initFun() {
  * @param url
  */
 function uploadPic(base64, url) {
-	var title=$('input.addtitle').val();
+	var title=$('.addtitle').val();
 	dialog = BootstrapDialog.onloading();
 	$.post(url, {
 		img : base64,
@@ -83,12 +83,21 @@ $(function() {
 //	             "left":(e.pageX-10)+"px"
 	         }).fadeIn("fast");
 	});
-	
 	$("body").delegate(".hispic", "mouseout", function () {
 		 $("#pic").remove();
 	});
 	
-})
+	/**
+	 * 隐藏模态窗口触发初始化事件
+	 */
+	$('#avatar-modal').on('hide.bs.modal', function() {
+//		$('.addtitle').val('');
+		history.go(0);
+	});
+	
+	
+	
+});
 
 /**
  * 启用历史图片
@@ -191,48 +200,21 @@ function move2head(id) {
 function updatepic(id) {
 	if (!id)
 		return;
-	BootstrapDialog
-			.confirm(
-					"请确认是否要作废该图片?",
-					function(result) {
-						if (!result)
-							return;
-						dialog = BootstrapDialog.isSubmitted();
-						$.getJSON(localhostUrl+'mgr/updatepic', {
-							picid : id,
-							ifuss : 2,
-						}, function(data) {
-							dialog.close();
-							if (!$.isSuccess(data))
-								return;
-							findListInfo();
-							BootstrapDialog.msg(data.body,
-									BootstrapDialog.TYPE_SUCCESS);
-						});
-					});
-}
-
-
-/*
- * 显示编辑窗口
- * 
- */
-function showModifyBox(picId) {
-	$('.empty').removeClass('empty');
-	if (!picId) return;
-	dialog = BootstrapDialog.loading();
-	$('input.modifyName').val("");
-	$('textarea.modifyDesc').val("");
-	$.getJSON('mgr/findPicById', {picid : picId}, function(data) {
-		dialog.close();
-		if (!$.isSuccess(data)) return;
-		$('input.modifyName').val(data.body.deptName);
-		$('textarea.modifyDesc').val(data.body.deptDescription);
-		$('button.modifyBtn').attr('onclick', 'modifyDept(' + data.body.deptId + ')');
-		$('div.modify-box').modal({
-			closable : false,
-			show : true
+	BootstrapDialog.confirm("请确认是否要作废该图片?", function(result) {
+		if (!result)
+			return;
+		dialog = BootstrapDialog.isSubmitted();
+		$.getJSON(localhostUrl + 'mgr/updatepic', {
+			picid : id,
+			ifuss : 2,
+		}, function(data) {
+			dialog.close();
+			if (!$.isSuccess(data))
+				return;
+			findListInfo();
+			BootstrapDialog.msg(data.body, BootstrapDialog.TYPE_SUCCESS);
 		});
 	});
 }
+
 
