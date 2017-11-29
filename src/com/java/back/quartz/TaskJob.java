@@ -14,39 +14,80 @@ import com.java.back.utils.DBhepler;
 @Component
 public class TaskJob {
 	static Logger logger=Logger.getLogger(TaskJob.class);
-	
+	private static Connection conn = DBhepler.getConnection();
 	
 	/**
-	 * 执行定时任务(会员卡过期)
+	 * 执行定时任务
 	 * @throws SQLException
 	 */
 	public void CardJob() throws SQLException {
-		Connection conn = DBhepler.getConnection();
-		System.out.println("定时任务每晚11点=========");
-		String sql = "SELECT ID FROM TE_MEMBER_CARD WHERE  DATE_FORMAT(CURDATE(),'%Y-%m-%d')=EXPIREDATE and ifuseless!="+ClubConst.STATE_OVERDUE;
-		String upsql = "UPDATE TE_MEMBER_CARD SET IFUSELESS=? WHERE ID=?";
-		ResultSet query = DBhepler.query(sql);
-		conn.setAutoCommit(false);
-		PreparedStatement ps = conn.prepareStatement(upsql);
-		while (query.next()) {
-			System.out.println(query.getString(1));
-			ps.setInt(1, ClubConst.STATE_OVERDUE);//过期了
-			ps.setString(2, query.getString(1));
-			ps.addBatch();
-		}
+		cardOver();
+		matchEnd();
+	}
+	
+	/**
+	 * 会员卡过期
+	 */
+	private void cardOver() {
 		try {
-			ps.executeBatch();
-			conn.commit();
-			ps.close();
+			System.out.println("定时任务每晚11点=========");
+			String sql = "SELECT ID FROM TE_MEMBER_CARD WHERE  DATE_FORMAT(CURDATE(),'%Y-%m-%d')=EXPIREDATE and ifuseless!="+ClubConst.STATE_OVERDUE;
+			String upsql = "UPDATE TE_MEMBER_CARD SET IFUSELESS=? WHERE ID=?";
+			ResultSet query = DBhepler.query(sql);
+			conn.setAutoCommit(false);
+			PreparedStatement ps = conn.prepareStatement(upsql);
+			while (query.next()) {
+				System.out.println(query.getString(1));
+				ps.setInt(1, ClubConst.STATE_OVERDUE);//过期了
+				ps.setString(2, query.getString(1));
+				ps.addBatch();
+			}
+			try {
+				ps.executeBatch();
+				conn.commit();
+				ps.close();
+			} catch (Exception e) {
+				// TODO: handle exception
+				conn.rollback();
+				ps.close();
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			conn.rollback();
-			ps.close();
 		}
 	}
 	
 	/**
-	 * 会员卡今天到期的提醒
+	 * 定时结束比赛
+	 */
+	private void matchEnd() {
+		try {
+			String sql = "SELECT ID FROM TE_MATCH WHERE  DATE_FORMAT(CURDATE(),'%Y-%m-%d')=str_to_date(MATCHTIME, '%Y-%m-%d')  and state="+ClubConst.M_ALREADYSTARTED;
+			String upsql = "UPDATE TE_MATCH SET STATE=? WHERE ID=?";
+			ResultSet query = DBhepler.query(sql);
+			conn.setAutoCommit(false);
+			PreparedStatement ps = conn.prepareStatement(upsql);
+			while (query.next()) {
+				System.out.println(query.getString(1));
+				ps.setInt(1, ClubConst.M_HASENDED);//结束了
+				ps.setString(2, query.getString(1));
+				ps.addBatch();
+			}
+			try {
+				ps.executeBatch();
+				conn.commit();
+				ps.close();
+			} catch (Exception e) {
+				// TODO: handle exception
+				conn.rollback();
+				ps.close();
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
+	/**
+	 * 会员卡今天到期的提醒(每天八点提醒)
 	 */
 	private void cardWarn(){
 		String sql = "SELECT MEMBERID ,CARDTYPE,ID FROM TE_MEMBER_CARD WHERE  DATE_FORMAT(CURDATE(),'%Y-%m-%d')=EXPIREDATE and ifuseless!="+ClubConst.STATE_OVERDUE;
