@@ -137,11 +137,11 @@ public class MatchServiceImpl extends AbstractDao<TeMatch> implements
 
 	@Transactional
 	@Override
-	public JSONReturn stopMatch(String id) {
+	public JSONReturn modifyState(String id, int state) {
 		// TODO Auto-generated method stub
 		try {
 			TeMatch teMatch = get(id);
-			teMatch.setState(ClubConst.M_CANCEL);
+			teMatch.setState(state);
 			return JSONReturn.buildSuccess("操作成功");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -150,19 +150,4 @@ public class MatchServiceImpl extends AbstractDao<TeMatch> implements
 		return JSONReturn.buildFailure();
 	}
 	
-	@Transactional
-	@Override
-	public JSONReturn recovery(String id) {
-		// TODO Auto-generated method stub
-		try {
-			TeMatch teMatch = get(id);
-			teMatch.setState(ClubConst.M_NOTSTARTED);
-			return JSONReturn.buildSuccess("操作成功");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return JSONReturn.buildFailure();
-	}
-
 }

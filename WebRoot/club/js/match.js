@@ -1,5 +1,6 @@
 var match = {};
 var member = {};
+var memberMatch = {};
 function initFun() {
 	if (secure.add) $('button.btn-create').removeClass('hide');
 	if (!secure.add) $('button.btn-create').remove();
@@ -156,21 +157,24 @@ function analyzeBtns(v) {
 	var btns = "";
 	btns += secure.find ? "<button type='button' class='btn btn-success btn-xs' onclick='showRecord(\"" + v.id + "\","+v.state+")'><span class='glyphicon glyphicon-paperclip'></span>记录</button>" : "";
 	if(v.state==1){
+		btns += "<button type='button' class='btn btn btn-warning btn-xs' onclick='start(\"" + v.id + "\")'><span class='glyphicon glyphicon-play'></span>开始</button>";
 		btns += "<button type='button' class='btn btn-danger btn-xs' onclick='pushNotice(\"" + v.id + "\")'><span class='glyphicon glyphicon-phone'></span>推送</button>";
 		if (secure.modify) {
 			btns += "<button type='button' class='btn btn-primary btn-xs' onclick='showModify(\"" + v.id + "\")'><span class='glyphicon glyphicon-pencil'></span>编辑</button>";
 		}
-		btns += "<button type='button' class='btn btn-warning btn-xs' onclick='stop(\"" + v.id + "\")'><span class='glyphicon glyphicon-remove'></span>取消</button>";
+		btns += "<button type='button' class='btn btn-warning btn-xs' onclick='stop(\"" + v.id + "\")'><span class='glyphicon glyphicon-off'></span>取消</button>";
 	}else{
+		btns += "<button type='button' disabled='disabled' class='btn btn btn-warning btn-xs' onclick='start(\"" + v.id + "\")'><span class='glyphicon glyphicon-play'></span>开始</button>";
 		btns += "<button type='button' disabled='disabled' class='btn btn-danger btn-xs' onclick='pushNotice(\"" + v.id + "\")'><span class='glyphicon glyphicon-phone'></span>推送</button>";
 		btns += "<button type='button' disabled='disabled' class='btn btn-primary btn-xs' onclick='showModify(\"" + v.id + "\")'><span class='glyphicon glyphicon-pencil'></span>编辑</button>";
-		btns += "<button type='button' disabled='disabled' class='btn btn-warning btn-xs' onclick='stop(\"" + v.id + "\")'><span class='glyphicon glyphicon-remove'></span>取消</button>";
+		btns += "<button type='button' disabled='disabled' class='btn btn-warning btn-xs' onclick='stop(\"" + v.id + "\")'><span class='glyphicon glyphicon-off'></span>取消</button>";
 	}
 	//状态(1:未开始,2:已开始,3:已结束,4:已取消)
 	if(v.state==4){
-		btns += "<button type='button' class='btn btn-info btn-xs' onclick='recovery(\"" + v.id + "\")'><span class='glyphicon glyphicon-ok'></span>恢复</button>";
-	}else
-		btns += "<button type='button' disabled='disabled' class='btn btn-info btn-xs' onclick='recovery(\"" + v.id + "\")'><span class='glyphicon glyphicon-ok'></span>恢复</button>";
+		btns += "<button type='button' class='btn btn-info btn-xs' onclick='recovery(\"" + v.id + "\")'><span class='glyphicon glyphicon-refresh'></span>恢复</button>";
+	}else{
+		btns += "<button type='button' disabled='disabled' class='btn btn-info btn-xs' onclick='recovery(\"" + v.id + "\")'><span class='glyphicon glyphicon-refresh'></span>恢复</button>";
+	}
 	return btns;
 }
 
@@ -186,6 +190,24 @@ function pushNotice(id) {
 		$.getJSON(localhostUrl+'mgr/pushNoticeMatch', {id : id}, function(data) {
 			dialog.close();
 			if (!$.isSuccess(data)) return;
+			BootstrapDialog.msg(data.body, BootstrapDialog.TYPE_SUCCESS);
+		});
+	});
+}
+
+/**
+ * 开始比赛
+ * @param id
+ */
+function start(id) {
+	if (!id) return;
+	BootstrapDialog.confirm("请确认是否开始比赛?", function(result) {
+		if (!result) return;
+		dialog = BootstrapDialog.isSubmitted();
+		$.getJSON(localhostUrl+'mgr/startMatch', {id : id}, function(data) {
+			dialog.close();
+			if (!$.isSuccess(data)) return;
+			findListInfo();
 			BootstrapDialog.msg(data.body, BootstrapDialog.TYPE_SUCCESS);
 		});
 	});
@@ -235,17 +257,18 @@ function showRecord(id,state) {
 	if (!id) return;
 	match.id=id;
 	match.state=state;
-	
 	dialog = BootstrapDialog.loading();
 	$.getJSON(localhostUrl+'/mgr/findMeMatchList', {mid : id},function(data) {
 		dialog.close();
-		$('button.add-empl-btn, table.table-record-list').addClass('hide');
+		$('button.add-empl-btn, table.table-record-list,button.exportButton').addClass('hide');//隐藏打印按钮
 		$('div.record-modal-body').find('div.notdate').remove();
 		if (!$.isSuccess(data)) return;
 		var tbody = $('tbody.record-list').empty();
+			//状态(1:未开始,2:已开始,3:已结束,4:已取消)
 			if(data.body.length>0){
-				if(state != 3&&state != 4){//添加会员的按钮
-					$('button.add-empl-btn').removeClass('hide');
+				if(state== 1||state == 2){
+					$('button.exportButton').removeClass('hide');//显示打印按钮
+					$('button.add-empl-btn').removeClass('hide');//添加会员的按钮
 				}
 				$('table.table-record-list').removeClass('hide');
 				$.each(data.body, function(i,v){
@@ -256,6 +279,7 @@ function showRecord(id,state) {
 					.append($('<td></td>').append(v.members.phone))
 					.append($('<td></td>').append(v.createtime))
 					.append($("<td></td>").append(v.members.griptype==1? '直板' : '横板'))
+					.append($('<td></td>').append(v.score))
 					.append($('<td></td>').append(analyzeApplyBtns(v.id,state)))
 					.appendTo(tbody);
 				});
@@ -285,9 +309,39 @@ function analyzeApplyBtns(id,state){
 	if(state==1||state==2){
 		btns += "<button type='button' class='btn btn-danger btn-xs' onclick='delMemberMatch(\"" + id + "\")'><span class='glyphicon glyphicon-minus'></span>删除</button>" ;
 	}
+	if(state!=1&&state!=4){
+		btns += "<button type='button' class='btn btn-success btn-xs' onclick='evaluationMatch(\"" + id + "\")'><span class='glyphicon glyphicon-bookmark'></span>评分</button>" ;
+	}
 	return btns;
 }
 
+/**
+ * 显示评分窗口
+ * @param id
+ */
+function evaluationMatch(id){
+	if(!id) return;
+	memberMatch.id=id;
+	BootstrapDialog.showModel($('div.evaluation-training-box'));
+}
+
+/**
+ * 为培训评分
+ */
+function evaluationEmployeesTraining(){
+	if(!memberMatch.id) return;
+	$.isSubmit = true;
+	var score = $.verifyForm($('input.score'), true);
+	if(!$.isSubmit) return;
+	dialog = BootstrapDialog.loading();
+	$.post(localhostUrl+'mgr/matchScore', {id:memberMatch.id,score:score}, function(data){
+		dialog.close();
+		if(!$.isSuccess(data)) return;
+		BootstrapDialog.msg(data.body, BootstrapDialog.TYPE_SUCCESS);
+		BootstrapDialog.hideModel($('div.evaluation-training-box'));
+		showRecord(match.id,match.state);
+	}, 'json');
+}
 /*
  * 关闭报名参加比赛班会员列表窗口
  *  
@@ -337,6 +391,7 @@ function findMemberList(){
 		});
 	}, 'JSON');
 }
+
 /*
  * 渲染添加比赛记录按钮
  *  
@@ -416,4 +471,19 @@ function addAllMember(){
 			$("tbody.empl-list-tboal tr td button").prop('disabled', true);
 		}, 'JSON');
 	});
+}
+
+/**
+ * 导出参赛人员列表
+ */
+function exportMember(){
+	var leng = $("tbody.record-list tr").length; 
+	var ids = [];
+	//列表所有的id
+	for (var i = 0; i <= leng; i++) {
+		numberStr = $("tbody.record-list tr").eq(i).find("td:eq(1)").html();
+		ids.push(numberStr);
+	}
+	dialog = BootstrapDialog.loading();
+	location.href=localhostUrl+'mgr/exportMember?ids='+ids;
 }

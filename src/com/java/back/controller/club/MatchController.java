@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.java.back.constant.ClubConst;
 import com.java.back.controller.support.AbstractController;
 import com.java.back.model.club.TeMatch;
 import com.java.back.model.club.TeMember;
@@ -90,7 +91,7 @@ public class MatchController extends AbstractController{
 	@ResponseBody
 	@RequestMapping(value = "stopMatch")
 	public JSONReturn stopMatch(String id) {
-		return matchService.stopMatch(id);
+		return matchService.modifyState(id, ClubConst.M_CANCEL);
 	}
 	
 	/**
@@ -101,7 +102,18 @@ public class MatchController extends AbstractController{
 	@ResponseBody
 	@RequestMapping(value = "recovery")
 	public JSONReturn recovery(String id) {
-		return matchService.recovery(id);
+		return matchService.modifyState(id, ClubConst.M_NOTSTARTED);
+	}
+	
+	/**
+	 * 开始比赛
+	 * @param id
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "startMatch")
+	public JSONReturn startMatch(String id) {
+		return matchService.modifyState(id, ClubConst.M_ALREADYSTARTED);
 	}
 	
 	/**
@@ -155,6 +167,33 @@ public class MatchController extends AbstractController{
 	@RequestMapping(value = "deleteMemberMatch")
 	public JSONReturn deleteMemberMatch(String memhid) {
 		return memberMatchService.deleteMemberMatch(memhid);
+	}
+	
+	/**
+	 * 填写比赛名次
+	 * @param id
+	 * @param score
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "matchScore")
+	public JSONReturn matchScore(String id,int score) {
+		return memberMatchService.matchScore(id, score);
+	}
+	
+	/**
+	 * 导出参赛人员
+	 * 将参赛人员分成A B C D 四个组,A、B两组为上半区，C、D两组为下半区
+	 * 小组赛：采取单循环赛，小组前两名选手进入下一轮
+	 * 1/4决赛：每个半区进行组间交叉淘汰赛，例如上半区中A组的第一对垒B组的第二，A组的第二对垒B组的第一，下半区采取同样的交叉淘汰方式，获胜方进入下一轮 
+	 * 半决赛：上半区获胜的两位选手进行对垒，上半区获胜的两位选手进行对垒，各半区获胜者进入决赛 
+	 * 决赛：获胜者获得本次比赛冠军
+	 * @param memhid
+	 */
+	@RequestMapping(value = "exportMember")
+	public void exportMember(String ids) {
+		System.out.println(ids);
+		
 	}
 
 }

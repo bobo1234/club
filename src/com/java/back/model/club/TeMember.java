@@ -39,11 +39,11 @@ public class TeMember extends BaseBean {
 	/**
 	 * 状态
 	 */
-	private int status;
+	private Integer status;
 	/**
 	 * 总消费金额
 	 */
-	private int consumeMoney;
+	private Integer consumeMoney;
 	/**
 	 * 年龄
 	 */
@@ -85,6 +85,10 @@ public class TeMember extends BaseBean {
 	 */
 	private String remark;
 	
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
 	public int getConsumeMoney() {
 		return consumeMoney;
 	}

@@ -118,4 +118,19 @@ public class MemberMatchServiceImpl extends AbstractDao<TeMemberMatchLog>
 		return JSONReturn.buildFailureWithEmptyBody();
 	}
 
+	@Transactional
+	@Override
+	public JSONReturn matchScore(String id, int score) {
+		// TODO Auto-generated method stub
+		try {
+			TeMemberMatchLog teMemberMatchLog = get(id);
+			teMemberMatchLog.setScore(score);
+			return JSONReturn.buildSuccess("操作成功");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return JSONReturn.buildFailureWithEmptyBody();
+	}
+
 }

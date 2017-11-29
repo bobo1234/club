@@ -31,6 +31,13 @@ public abstract interface MemberMatchService {
 	 * @return
 	 */
 	public abstract JSONReturn deleteMemberMatch(String id);
+	/**
+	 * 比赛名次
+	 * @param id
+	 * @param score
+	 * @return
+	 */
+	public abstract JSONReturn matchScore(String id,int score);
 
 
 }

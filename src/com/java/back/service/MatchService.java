@@ -22,9 +22,12 @@ public abstract interface MatchService {
 	
 	public abstract JSONReturn findMatchById(String id);
 	
-	public abstract JSONReturn stopMatch(String id);
-	
-	public abstract JSONReturn recovery(String id);
-
+	/**
+	 * 修改比赛状态
+	 * @param id
+	 * @param state
+	 * @return
+	 */
+	public abstract JSONReturn modifyState(String id,int state);
 
 }

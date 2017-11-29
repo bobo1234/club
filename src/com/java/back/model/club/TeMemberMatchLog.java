@@ -37,6 +37,10 @@ public class TeMemberMatchLog extends BaseBean {
 	 * 创建时间
 	 */
 	private String createtime;
+	/**
+	 * 成绩
+	 */
+	private Integer score;
 
 	public String getId() {
 		return id;
@@ -68,6 +72,13 @@ public class TeMemberMatchLog extends BaseBean {
 
 	public void setCreatetime(String createtime) {
 		this.createtime = createtime;
+	}
+	public Integer getScore() {
+		return score;
+	}
+
+	public void setScore(Integer score) {
+		this.score = score;
 	}
 
 	public TeMemberMatchLog() {

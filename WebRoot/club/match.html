@@ -117,15 +117,26 @@
 				<div class="modal-content">
 					<div class="modal-header"><h4 class="modal-title">报名记录</h4></div>
 					<div class="modal-body record-modal-body" style="max-height:450px; overflow-y:auto;">
-						<button type="button" class="btn btn-success add-empl-btn hide" style="margin-bottom:15px;" onclick="showAddEmplBox()">添加会员</button>
-						<table class="table table-bordered table-hover table-record-list hide">
+					<div class="tool">
+							<div class="input-group float-left">
+								<input type="text" class="form-control search-val" style="width:350px;" placeholder="请输入会员姓名首字母,或手机尾号" maxlength="64">
+								<button class="btn btn-primary" type="button" onclick="findMemberList()"><span class="glyphicon glyphicon-search"></span>搜索</button>
+							</div><!-- /input-group -->
+							<div class="input-group float-right">
+								<button type="button" class="btn btn-success  add-empl-btn hide" onclick="showAddEmplBox()"><span class="glyphicon glyphicon-plus"></span>添加会员</button> &nbsp;&nbsp;
+								<button class="btn btn-primary  exportButton hide" id="exportButton" type="button" onclick="exportMember()"><span class="glyphicon glyphicon-print"></span>下载打印</button>
+							</div>
+							<div class="clear"></div>
+					</div>
+						<table class="table table-bordered table-hover margin-top-15 table-record-list hide">
 							<thead>
-								<th style="width:70px;">编号</th>
-								<th style="width:120px;">姓名</th>
-								<th style="width:100px;">性别</th>
+								<th style="width:60px;">编号</th>
+								<th style="width:90px;">姓名</th>
+								<th style="width:80px;">性别</th>
 								<th style="width:130px;">手机号</th>
 								<th style="width:150px;">报名时间</th>
-								<th style="width:100px;">握拍方式</th>
+								<th style="width:80px;">握拍方式</th>
+								<th style="width:60px;">名次</th>
 								<th>操作</th>
 							</thead>
 							<tbody class="record-list"></tbody>
@@ -175,6 +186,24 @@
 				</div>
 			</div>
 		</div>
+		
+		
+		<div class="modal fade evaluation-training-box sm-modal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header"><h4 class="modal-title">会员比赛成绩</h4></div>
+					<div class="modal-body">
+						<span style="line-height:20px; color:#666;"><b>PS: </b>请填写比赛名次!!!</span>
+					<input type="number" class="form-control margin-top-15 score" min="1" max='4' value="1" />
+					</div> 
+					<div class="modal-footer margin-top-15">
+						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+						<button type="button" class="btn btn-primary" onclick="evaluationEmployeesTraining()">评分</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
 		
 		
 		<div class="modal fade" id="modifyPassword" tabindex="-1" role="dialog" aria-labelledby="modifyPasswordLabel" aria-hidden="true">
