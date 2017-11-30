@@ -8,9 +8,10 @@ public abstract interface MemberMatchService {
 	/**
 	 * 查询参赛记录
 	 * @param mid
+	 * @param searchVal 姓名,首字母,或者手机尾号
 	 * @return
 	 */
-	public abstract JSONReturn findMeMatchList(String mid);
+	public abstract JSONReturn findMeMatchList(String mid,String searchVal);
 
 	/**
 	 * 参加比赛

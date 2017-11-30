@@ -221,7 +221,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * 解密
+	 * BASE64解密
 	 * 
 	 * @param s
 	 * @return
@@ -242,7 +242,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * 加密
+	 * BASE64加密
 	 * 
 	 * @param str
 	 * @return

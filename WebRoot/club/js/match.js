@@ -2,6 +2,11 @@ var match = {};
 var member = {};
 var memberMatch = {};
 function initFun() {
+	$("input.matchSearch-val").keydown(function(event) {// 给输入框绑定按键事件
+		if (event.keyCode == "13") {// 判断如果按下的是回车键则执行下面的代码
+			$(this).next(".btn-primary").click();
+		}
+	});
 	if (secure.add) $('button.btn-create').removeClass('hide');
 	if (!secure.add) $('button.btn-create').remove();
 	if (secure.find) {
@@ -261,7 +266,6 @@ function showRecord(id,state) {
 	$.getJSON(localhostUrl+'/mgr/findMeMatchList', {mid : id},function(data) {
 		dialog.close();
 		$('button.add-empl-btn, table.table-record-list,button.exportButton').addClass('hide');//隐藏打印按钮
-		$('div.record-modal-body').find('div.notdate').remove();
 		if (!$.isSuccess(data)) return;
 		var tbody = $('tbody.record-list').empty();
 			//状态(1:未开始,2:已开始,3:已结束,4:已取消)
@@ -273,13 +277,13 @@ function showRecord(id,state) {
 				$('table.table-record-list').removeClass('hide');
 				$.each(data.body, function(i,v){
 					$('<tr></tr>')
-					.append($('<td></td>').append(v.members.id))
+					.append($('<td></td>').append(i+1))
 					.append($('<td></td>').append(v.members.realname))
 					.append($("<td></td>").append(v.members.sex==1? '女' : '男'))
 					.append($('<td></td>').append(v.members.phone))
 					.append($('<td></td>').append(v.createtime))
 					.append($("<td></td>").append(v.members.griptype==1? '直板' : '横板'))
-					.append($('<td></td>').append(v.score))
+					.append($('<td></td>').append(v.score>0?v.score:'暂无'))
 					.append($('<td></td>').append(analyzeApplyBtns(v.id,state)))
 					.appendTo(tbody);
 				});
@@ -299,6 +303,37 @@ function showRecord(id,state) {
 		BootstrapDialog.showModel($('div.record-box'));
 	});
 }
+
+/**
+ * 搜索参赛人员
+ */
+function findMatchMemberList() {
+	if (!match.id) return;
+	var searchval= $('input.matchSearch-val').val();
+	dialog = BootstrapDialog.loading();
+	$.getJSON(localhostUrl+'/mgr/findMeMatchList', {mid:match.id,searchVal:searchval},function(data) {
+		dialog.close();
+		if (!$.isSuccess(data)) return;
+		var tbody = $('tbody.record-list').empty();
+			if(data.body.length>0){
+				$('table.table-record-list').removeClass('hide');
+				$.each(data.body, function(i,v){
+					$('<tr></tr>')
+					.append($('<td></td>').append(i+1))
+					.append($('<td></td>').append(v.members.realname))
+					.append($("<td></td>").append(v.members.sex==1? '女' : '男'))
+					.append($('<td></td>').append(v.members.phone))
+					.append($('<td></td>').append(v.createtime))
+					.append($("<td></td>").append(v.members.griptype==1? '直板' : '横板'))
+					.append($('<td></td>').append(v.score>0?v.score:'暂无'))
+					.append($('<td></td>').append(analyzeApplyBtns(v.id,match.state)))
+					.appendTo(tbody);
+				});
+				BootstrapDialog.showModel($('div.record-box'));
+			}
+	});
+}
+
 
 /*
  * 渲染比赛记录操作按钮
@@ -331,7 +366,8 @@ function evaluationMatch(id){
 function evaluationEmployeesTraining(){
 	if(!memberMatch.id) return;
 	$.isSubmit = true;
-	var score = $.verifyForm($('input.score'), true);
+	$('input.matchSearch-val').val('');
+	var score = $.verifyNumForm($('input.score'), true,0);
 	if(!$.isSubmit) return;
 	dialog = BootstrapDialog.loading();
 	$.post(localhostUrl+'mgr/matchScore', {id:memberMatch.id,score:score}, function(data){
@@ -348,6 +384,7 @@ function evaluationEmployeesTraining(){
  */
 function closeApplyRecord(){
 	findListInfo();
+	$('input.matchSearch-val').val('');
 	BootstrapDialog.hideModel($('div.record-box'));
 }
 

@@ -119,8 +119,8 @@
 					<div class="modal-body record-modal-body" style="max-height:450px; overflow-y:auto;">
 					<div class="tool">
 							<div class="input-group float-left">
-								<input type="text" class="form-control search-val" style="width:350px;" placeholder="请输入会员姓名首字母,或手机尾号" maxlength="64">
-								<button class="btn btn-primary" type="button" onclick="findMemberList()"><span class="glyphicon glyphicon-search"></span>搜索</button>
+								<input type="text" class="form-control matchSearch-val" style="width:350px;" placeholder="请输入会员姓名首字母,或手机尾号" maxlength="64">
+								<button class="btn btn-primary" type="button" onclick="findMatchMemberList()"><span class="glyphicon glyphicon-search"></span>搜索</button>
 							</div><!-- /input-group -->
 							<div class="input-group float-right">
 								<button type="button" class="btn btn-success  add-empl-btn hide" onclick="showAddEmplBox()"><span class="glyphicon glyphicon-plus"></span>添加会员</button> &nbsp;&nbsp;
@@ -193,8 +193,8 @@
 				<div class="modal-content">
 					<div class="modal-header"><h4 class="modal-title">会员比赛成绩</h4></div>
 					<div class="modal-body">
-						<span style="line-height:20px; color:#666;"><b>PS: </b>请填写比赛名次!!!</span>
-					<input type="number" class="form-control margin-top-15 score" min="1" max='4' value="1" />
+						<span style="line-height:20px; color:#666;"><b>PS: </b>请填写比赛名次,只能设置前四名,设置为 0 即可去除排名!!!</span>
+					<input type="number" class="form-control margin-top-15 score" min="0" max='4' value="1" />
 					</div> 
 					<div class="modal-footer margin-top-15">
 						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>

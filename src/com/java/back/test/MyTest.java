@@ -84,7 +84,7 @@ public class MyTest extends RedisSpringProxy {
 	}
 	@Test
 	public void mmatch() {
-		memberMatchService.findMeMatchList("1122");
+//		memberMatchService.findMeMatchList("1122");
 		
 	}
 	@Test

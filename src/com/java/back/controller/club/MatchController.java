@@ -119,12 +119,13 @@ public class MatchController extends AbstractController{
 	/**
 	 * 参赛人员列表
 	 * @param mid
+	 * @param searchVal 姓名,首字母,或者手机尾号
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "findMeMatchList")
-	public JSONReturn findMeMatchList(String mid) {
-		return memberMatchService.findMeMatchList(mid);
+	public JSONReturn findMeMatchList(String mid,String searchVal) {
+		return memberMatchService.findMeMatchList(mid,searchVal);
 	}
 	
 	/**
