@@ -22,6 +22,7 @@ import com.java.back.service.MatchService;
 import com.java.back.service.MemberMatchService;
 import com.java.back.support.JSONReturn;
 import com.java.back.utils.Common;
+import com.java.back.utils.ResponseUtil;
 import com.java.back.utils.excel.ExcelExport;
 
 /**
@@ -215,13 +216,22 @@ public class MatchController extends AbstractController {
 	@RequestMapping(value = "exportMember")
 	public void exportMember(String ids, HttpServletResponse response) {
 		String[] str = ids.split(",");
+		try {
+			if (str.length < 8) {
+				ResponseUtil.write(response,
+						"参赛人数太少,无法分组!");
+				return;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		List<String> list = Arrays.asList(str);
 		List<List<String>> randomGroup = Common.randomGroup(list);
 		List list2 = new ArrayList();
 		List<Object[]> dataset = null;
-		for (int i = 0; i < randomGroup.size(); i++) {//四组
+		for (int i = 0; i < randomGroup.size(); i++) {// 四组
 			dataset = new ArrayList<Object[]>();
-			System.out.println("循环------");
 			for (int x = 0; x < randomGroup.get(i).size(); x++) {
 				for (int y = 0; y <= x - 1; y++) {
 					String[] obj = new String[1];
