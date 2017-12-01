@@ -521,6 +521,5 @@ function exportMember(){
 		numberStr = $("tbody.record-list tr").eq(i).find("td:eq(1)").html();
 		ids.push(numberStr);
 	}
-	dialog = BootstrapDialog.loading();
 	location.href=localhostUrl+'mgr/exportMember?ids='+ids;
 }
