@@ -47,17 +47,27 @@ public class MemberMatchServiceImpl extends AbstractDao<TeMemberMatchLog>
 
 		}
 		TeMatch match = getModel(mid, TeMatch.class);
-		if (match.getState()==ClubConst.M_HASENDED||match.getState()==ClubConst.M_ALREADYSTARTED) {
+		if (match.getState() == ClubConst.M_HASENDED
+				|| match.getState() == ClubConst.M_ALREADYSTARTED) {
 			criteria.addOrder(Order.asc("score"));
 			List<TeMemberMatchLog> list = criteria.list();
-			List<TeMemberMatchLog> list2 = list.subList(list.size()-4, list.size());
-			List<TeMemberMatchLog> subList = list.subList(0, list.size()-4);
-			list2.addAll(subList);
-			return JSONReturn.buildSuccess(list2);
+			List<TeMemberMatchLog> matchLogs = new ArrayList<TeMemberMatchLog>();
+			List<TeMemberMatchLog> aList = new ArrayList<TeMemberMatchLog>();
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i).getScore() > 0) {
+					matchLogs.add(list.get(i));
+					list.remove(i);
+					i--;
+				}
+			}
+			aList.addAll(matchLogs);
+			aList.addAll(list);
+			return JSONReturn.buildSuccess(aList);
 		}
 		criteria.addOrder(Order.asc("createtime"));
 		return JSONReturn.buildSuccess(criteria.list());
 	}
+
 
 	@Transactional
 	@Override
@@ -145,8 +155,10 @@ public class MemberMatchServiceImpl extends AbstractDao<TeMemberMatchLog>
 		try {
 			int countAll = this
 					.countAll("SELECT count(mg.id) FROM te_member_match_log mg,te_member_match_log ml WHERE	mg.score > 0 AND mg.match_id = ml.match_id AND ml.id"
-							+ StringUtil.formatEqual(id) +" and mg.id"+StringUtil.formatNotEqual(id));
-			if (countAll <4) {
+							+ StringUtil.formatEqual(id)
+							+ " and mg.id"
+							+ StringUtil.formatNotEqual(id));
+			if (countAll < 4) {
 				TeMemberMatchLog teMemberMatchLog = get(id);
 				teMemberMatchLog.setScore(score);
 				return JSONReturn.buildSuccess("操作成功");

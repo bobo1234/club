@@ -1,5 +1,8 @@
 package com.java.back.controller.club;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -15,6 +18,7 @@ import com.java.back.model.club.TeMemberMatchLog;
 import com.java.back.service.MatchService;
 import com.java.back.service.MemberMatchService;
 import com.java.back.support.JSONReturn;
+import com.java.back.utils.Common;
 
 /**
  * 比赛管理
@@ -193,7 +197,13 @@ public class MatchController extends AbstractController{
 	 */
 	@RequestMapping(value = "exportMember")
 	public void exportMember(String ids) {
-		System.out.println(ids);
+		String [] str=ids.split(",");
+		List<String> list = Arrays.asList(str);
+		List<List<String>> randomGroup = Common.randomGroup(list);
+		for (int i = 0; i < randomGroup.size(); i++) {
+			System.out.println(randomGroup.get(i));
+		}
+		
 		
 	}
 

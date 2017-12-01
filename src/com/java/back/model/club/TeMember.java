@@ -37,7 +37,7 @@ public class TeMember extends BaseBean {
 	 */
 	private String namecode;
 	/**
-	 * 状态
+	 * 状态(默认为0,)
 	 */
 	private Integer status;
 	/**
@@ -85,17 +85,26 @@ public class TeMember extends BaseBean {
 	 */
 	private String remark;
 	
+
+	public Integer getStatus() {
+		return status;
+	}
+
+
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
-	public int getConsumeMoney() {
+
+	public Integer getConsumeMoney() {
 		return consumeMoney;
 	}
 
-	public void setConsumeMoney(int consumeMoney) {
+
+	public void setConsumeMoney(Integer consumeMoney) {
 		this.consumeMoney = consumeMoney;
 	}
+
 
 	public String getRemark() {
 		return remark;
@@ -151,14 +160,6 @@ public class TeMember extends BaseBean {
 
 	public void setRealname(String realname) {
 		this.realname = realname;
-	}
-
-	public int getStatus() {
-		return status;
-	}
-
-	public void setStatus(int status) {
-		this.status = status;
 	}
 
 	public String getCreatetime() {

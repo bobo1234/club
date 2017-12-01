@@ -119,9 +119,13 @@ public class MemberServiceImpl extends AbstractDao<TeMember> implements
 					}
 				}
 			}
+			member.setConsumeMoney(0);
+			member.setStatus(0);
 			member.setCreatetime(DateUtil.getAllDate());
 			member.setNamecode(GetPinyin.getPinYinHeadChar(member.getRealname()));// 设置名称的首字母
-			member.setConsumeMoney(member.getConsumeMoney() + card.getPrice());// 消费金额
+			if (CompareUtil.isNotEmpty(card)) {// 办理会员卡
+				member.setConsumeMoney(member.getConsumeMoney()==null?0:member.getConsumeMoney() + card.getPrice());// 消费金额
+			}
 			this.save(member);
 			if (CompareUtil.isNotEmpty(card)) {// 办理会员卡
 				TeMemberCard memberCard = memberCardDao.addMemberCard(
