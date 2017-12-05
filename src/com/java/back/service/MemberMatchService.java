@@ -1,5 +1,7 @@
 package com.java.back.service;
 
+import java.util.List;
+
 import com.java.back.model.club.TeMemberMatchLog;
 import com.java.back.support.JSONReturn;
 
@@ -39,6 +41,11 @@ public abstract interface MemberMatchService {
 	 * @return
 	 */
 	public abstract JSONReturn matchScore(String id,int score);
-
+	/**
+	 * 上次比赛获胜,并且又参加了此次的比赛的人员
+	 * @param matchId
+	 * @return
+	 */
+	public List getLastTimeWinners(String matchId);
 
 }

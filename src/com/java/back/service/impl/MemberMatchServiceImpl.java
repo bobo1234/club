@@ -172,4 +172,34 @@ public class MemberMatchServiceImpl extends AbstractDao<TeMemberMatchLog>
 		return JSONReturn.buildFailureWithEmptyBody();
 	}
 
+
+	@Override
+	public List getLastTimeWinners(String matchId) {
+		// TODO Auto-generated method stub
+		String sql=  "SELECT mb.realname from te_member_match_log mlog ,te_member mb where mb.id=mlog.member_id  and  mlog.match_id =:mid and  EXISTS (";
+		sql+= " SELECT";
+		sql+= "	log.member_id";
+		sql+= " FROM";
+		sql+= "	te_member_match_log log";
+		sql+= " WHERE";
+		sql+= "		log.member_id=mlog.member_id";
+		sql+= " AND log.score > 0";
+		sql+= " AND log.match_id = (";
+		sql+= "	SELECT";
+		sql+= "		omh.id";
+		sql+= "	FROM";
+		sql+= "		te_match mh,";
+		sql+= "		te_match omh";
+		sql+= "	WHERE";
+		sql+= "		mh.id =:mid";
+		sql+= "	AND mh.matchtime > omh.matchtime";
+		sql+= "	AND omh.state ='3'";
+		sql+= "	ORDER BY";
+		sql+= "		omh.matchtime DESC";
+		sql+= "	LIMIT 1";
+		sql+= " ))";
+		List list = this.findSession().createSQLQuery(sql).setParameter("mid", matchId).list();
+		return list;
+	}
+
 }

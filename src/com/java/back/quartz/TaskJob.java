@@ -37,7 +37,7 @@ public class TaskJob {
 			conn.setAutoCommit(false);
 			PreparedStatement ps = conn.prepareStatement(upsql);
 			while (query.next()) {
-				System.out.println(query.getString(1));
+				logger.warn("会员卡过期:"+query.getString(1));
 				ps.setInt(1, ClubConst.STATE_OVERDUE);//过期了
 				ps.setString(2, query.getString(1));
 				ps.addBatch();
@@ -67,7 +67,7 @@ public class TaskJob {
 			conn.setAutoCommit(false);
 			PreparedStatement ps = conn.prepareStatement(upsql);
 			while (query.next()) {
-				System.out.println(query.getString(1));
+				logger.warn("自动结束比赛:"+query.getString(1));
 				ps.setInt(1, ClubConst.M_HASENDED);//结束了
 				ps.setString(2, query.getString(1));
 				ps.addBatch();
@@ -94,6 +94,7 @@ public class TaskJob {
 		ResultSet query = DBhepler.query(sql);
 		try {
 			while (query.next()) {
+				logger.warn("会员卡今天到期的提醒(每天八点提醒):"+query.getLong(1));
 				System.out.println(query.getLong(1)+"==============="+query.getString(2)+"==============="+query.getString(3));
 				
 			}
@@ -113,6 +114,7 @@ public class TaskJob {
 		ResultSet query = DBhepler.query(sql);
 		try {
 			while (query.next()) {
+				logger.warn("比赛今天即将开始的提醒(针对已参加的会员):"+query.getLong(1));
 				System.out.println("比赛:"+query.getLong(1)+"==="+query.getString(2)+"==="+query.getString(3)+"==="+query.getString(4));
 				
 			}

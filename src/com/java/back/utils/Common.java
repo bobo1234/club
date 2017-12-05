@@ -211,7 +211,7 @@ public class Common {
 	}
 
 	/**
-	 * 所及分成四组
+	 * 随机分成四组
 	 * 
 	 * @param list
 	 * @return
@@ -219,7 +219,6 @@ public class Common {
 	public static List randomGroup(List list) {
 		Collections.shuffle(list);// 打乱
 		int a = list.size() / 4;
-
 		List<List<String>> groupListByQuantity = groupListByQuantity(list, a);
 		List ulist = new ArrayList();
 		for (int i = 0; i < groupListByQuantity.size(); i++) {
@@ -230,11 +229,9 @@ public class Common {
 			}
 		}
 		Collections.shuffle(groupListByQuantity);// 打乱
-
 		for (int i = 0; i < ulist.size(); i++) {
 			groupListByQuantity.get(i).add(String.valueOf(ulist.get(i)));
 		}
-
 		/**
 		 * 组内循环
 		 */

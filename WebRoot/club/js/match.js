@@ -262,10 +262,12 @@ function showRecord(id,state) {
 	if (!id) return;
 	match.id=id;
 	match.state=state;
+	$(".matchSearch-val").val('');
 	dialog = BootstrapDialog.loading();
 	$.getJSON(localhostUrl+'/mgr/findMeMatchList', {mid : id},function(data) {
 		dialog.close();
 		$('button.add-empl-btn, table.table-record-list,button.exportButton').addClass('hide');//隐藏打印按钮
+		$('div.notdate').addClass('hide');
 		if (!$.isSuccess(data)) return;
 		var tbody = $('tbody.record-list').empty();
 			//状态(1:未开始,2:已开始,3:已结束,4:已取消)
@@ -521,5 +523,7 @@ function exportMember(){
 		numberStr = $("tbody.record-list tr").eq(i).find("td:eq(1)").html();
 		ids.push(numberStr);
 	}
-	location.href=localhostUrl+'mgr/exportMember?ids='+ids;
+	$("#memberNames").val(ids);
+	$("#matchid").val(match.id);
+	$("#mbNs").attr("action",localhostUrl+'mgr/exportMember').submit();
 }

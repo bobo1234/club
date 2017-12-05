@@ -2,6 +2,8 @@ package com.java.back.controller.club;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -214,12 +216,17 @@ public class MatchController extends AbstractController {
 	 * @param memhid
 	 */
 	@RequestMapping(value = "exportMember")
-	public void exportMember(String ids, HttpServletResponse response) {
+	public void exportMember(String ids, String mid,
+			HttpServletResponse response) {
+		List mlist = memberMatchService.getLastTimeWinners(mid);
+		String cnames = "";
+		for (int i = 0; i < mlist.size(); i++) {
+			cnames += mlist.get(i) + ",";
+		}
 		String[] str = ids.split(",");
 		try {
 			if (str.length < 8) {
-				ResponseUtil.write(response,
-						"参赛人数太少,无法分组!");
+				ResponseUtil.write(response, "参赛人数太少,无法分组!");
 				return;
 			}
 		} catch (Exception e) {
@@ -227,7 +234,26 @@ public class MatchController extends AbstractController {
 			e.printStackTrace();
 		}
 		List<String> list = Arrays.asList(str);
-		List<List<String>> randomGroup = Common.randomGroup(list);
+		List<String> linkList = new LinkedList<String>();
+		linkList.addAll(list);
+		System.out.println(cnames);
+		/**
+		 * 从所有参赛的与人员里移除之前获奖的人员
+		 */
+		for (int i = 0; i < linkList.size(); i++) {
+			if (cnames.contains(linkList.get(i))) {
+				linkList.remove(i);
+				i--;
+			}
+		}
+		/**
+		 * 剩下的人员分组,再将之前移除的获奖人员分发到四组中(保证公平性)
+		 */
+		List<List<String>> randomGroup = Common.randomGroup(linkList);
+		Collections.reverse(randomGroup);// 倒叙输出,人员少的在前
+		for (int i = 0; i < mlist.size(); i++) {
+			randomGroup.get(i).add(mlist.get(i).toString());
+		}
 		List list2 = new ArrayList();
 		List<Object[]> dataset = null;
 		for (int i = 0; i < randomGroup.size(); i++) {// 四组
