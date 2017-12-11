@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.sf.json.JSONObject;
 
+import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -41,12 +42,21 @@ public class MemberServiceImpl extends AbstractDao<TeMember> implements
 	@Override
 	public JSONReturn findList(int page, String serVal, int sex) {
 		// TODO Auto-generated method stub
-		String hql = getHql;
-		hql += StringUtil.isEmpty(serVal) ? "" : " and (realname like '%"
-				+ serVal + "%' or phone like '%" + serVal + "%')";
-		hql += sex > 0 ? " and sex=" + sex : "";
-		hql += " order by createtime desc";
-		List<TeMember> list = queryHqlForList(hql, null, page);
+		String sql = "SELECT a.* from ( select * from te_member where 1=1 ";
+		if (StringUtil.isNotEmpty(serVal)) {
+			sql += " and realname" + StringUtil.formatLike(serVal);
+			sql += " UNION SELECT  * from te_member where phone"
+					+ StringUtil.formatLike(serVal);
+			sql += " UNION SELECT  * from te_member where namecode"
+					+ StringUtil.formatEqual(serVal);
+		}
+		sql += sex > 0 ? " and sex=" + sex : "";
+		sql += " ) a  ORDER BY a.createtime desc  ";
+		Query query = this.findSession().createSQLQuery(sql)
+				.addEntity(getEntityClass());
+		query.setFirstResult((page - 1) * PageConstant.PAGE_LIST);
+		query.setMaxResults(PageConstant.PAGE_LIST);
+		List<TeMember> list = query.list();
 		for (TeMember teMember : list) {
 			teMember.setRank(ClubConst.getRank(teMember.getConsumeMoney()));
 			teMember.setAge(DateUtil.getAgefromBir(teMember.getBirthday()
@@ -58,11 +68,17 @@ public class MemberServiceImpl extends AbstractDao<TeMember> implements
 	@Override
 	public JSONReturn findCount(int page, String serVal, int sex) {
 		// TODO Auto-generated method stub
-		String hql = getCountHql;
-		hql += StringUtil.isEmpty(serVal) ? "" : " and (realname like '%"
-				+ serVal + "%' or phone like '%" + serVal + "%')";
-		hql += sex > 0 ? " and sex=" + sex : "";
-		int count = countHqlAll(hql);
+		String sql = "SELECT count(*) from ( select 1 from te_member where 1=1 ";
+		if (StringUtil.isNotEmpty(serVal)) {
+			sql += " and realname" + StringUtil.formatLike(serVal);
+			sql += " UNION SELECT 1 from te_member where phone"
+					+ StringUtil.formatLike(serVal);
+			sql += " UNION SELECT  1 from te_member where namecode"
+					+ StringUtil.formatEqual(serVal);
+		}
+		sql += sex > 0 ? " and sex=" + sex : "";
+		sql += " ) a";
+		int count = countAll(sql);
 		return JSONReturn.buildSuccess(PageUtils.calculatePage(page, count,
 				PageConstant.PAGE_LIST));
 	}
@@ -124,7 +140,8 @@ public class MemberServiceImpl extends AbstractDao<TeMember> implements
 			member.setCreatetime(DateUtil.getAllDate());
 			member.setNamecode(GetPinyin.getPinYinHeadChar(member.getRealname()));// 设置名称的首字母
 			if (CompareUtil.isNotEmpty(card)) {// 办理会员卡
-				member.setConsumeMoney(member.getConsumeMoney()==null?0:member.getConsumeMoney() + card.getPrice());// 消费金额
+				member.setConsumeMoney(member.getConsumeMoney() == null ? 0
+						: member.getConsumeMoney() + card.getPrice());// 消费金额
 			}
 			this.save(member);
 			if (CompareUtil.isNotEmpty(card)) {// 办理会员卡
@@ -208,11 +225,12 @@ public class MemberServiceImpl extends AbstractDao<TeMember> implements
 		// sql += " ) a  ORDER BY a.createtime desc  ";
 		String sql = "SELECT MB.* FROM TE_MEMBER MB WHERE 1=1 ";
 		if (StringUtil.isNotEmpty(serVal)) {
-			sql += " and (MB.NAMECODE like '%" + serVal + "%' or MB.PHONE like '%"
-					+ serVal + "' )";
+			sql += " and (MB.NAMECODE like '%" + serVal
+					+ "%' or MB.PHONE like '%" + serVal + "' )";
 		}
-		sql += griptype>0?" and MB.griptype="+griptype:"";
-		sql += " AND  NOT EXISTS ( SELECT 	log.member_id 	FROM te_member_match_log log WHERE log.member_id = MB.id and log.match_id"+StringUtil.formatEqual(matchid)+" ) ";
+		sql += griptype > 0 ? " and MB.griptype=" + griptype : "";
+		sql += " AND  NOT EXISTS ( SELECT 	log.member_id 	FROM te_member_match_log log WHERE log.member_id = MB.id and log.match_id"
+				+ StringUtil.formatEqual(matchid) + " ) ";
 		sql += "  ORDER BY MB.CREATETIME DESC  ";
 		List<TeMember> list = this.findSession().createSQLQuery(sql)
 				.addEntity(getEntityClass()).list();

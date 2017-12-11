@@ -49,10 +49,10 @@ public class MatchServiceImpl extends AbstractDao<TeMatch> implements
 	@Override
 	public JSONReturn findMatchCount(int page, String searchValue) {
 		// TODO Auto-generated method stub
-		String sql = "SELECT count(*) from ( select * from te_match where 1=1 ";
+		String sql = "SELECT count(*) from ( select 1 from te_match where 1=1 ";
 		if (StringUtil.isNotEmpty(searchValue)) {
 			sql += " and name" + StringUtil.formatLike(searchValue);
-			sql += " UNION SELECT  * from te_match where mark"
+			sql += " UNION SELECT  1 from te_match where mark"
 					+ StringUtil.formatLike(searchValue);
 		}
 		sql += " ) a ";
