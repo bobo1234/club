@@ -92,7 +92,7 @@ function detectionForm(){
 	$.isSubmit = true;	// 重置表单为可提交
 	// 基本信息
 	member.fullName = $.input('.realname', true, null);	// 姓名
-	member.sex = $.radio('.sex', true, null);	// 性别 (女:1,男:2)
+	member.sex = $.radio('.sex', true, null);	// 性别 (女:2,男:1)
 	member.phone = $.input('.phone', true, com.RegExps.isPhone);	// 手机号码
 	
 	member.birthday = $.input('.birthday', true, reg.date);	// 出生日期

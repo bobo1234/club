@@ -30,11 +30,11 @@ public class ClubConst {
 	/**
 	 * 女
 	 */
-	public static final int GIRL = 1;
+	public static final int GIRL = 2;
 	/**
 	 * 男
 	 */
-	public static final int BOY = 2;
+	public static final int BOY = 1;
 
 	/**
 	 * 直板

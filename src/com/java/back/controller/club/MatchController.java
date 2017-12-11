@@ -237,6 +237,7 @@ public class MatchController extends AbstractController {
 		List<String> linkList = new LinkedList<String>();
 		linkList.addAll(list);
 		System.out.println(cnames);
+		
 		/**
 		 * 从所有参赛的与人员里移除之前获奖的人员
 		 */
@@ -246,10 +247,15 @@ public class MatchController extends AbstractController {
 				i--;
 			}
 		}
+		
+		/**
+		 * 将所有人打散再分成四组
+		 */
+		List<List<String>> randomGroup = Common.randomGroup(linkList);
+		
 		/**
 		 * 剩下的人员分组,再将之前移除的获奖人员分发到四组中(保证公平性)
 		 */
-		List<List<String>> randomGroup = Common.randomGroup(linkList);
 		Collections.reverse(randomGroup);// 倒叙输出,人员少的在前
 		for (int i = 0; i < mlist.size(); i++) {
 			randomGroup.get(i).add(mlist.get(i).toString());

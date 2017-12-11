@@ -59,7 +59,7 @@ function findListInfo() {
 			$("<tr></tr>")
 			.append($("<td></td>").append(v.id))
 			.append($("<td></td>").append(v.realname))
-			.append($("<td></td>").append(v.sex==1? '女' : '男'))
+			.append($("<td></td>").append(v.sex==2? '女' : '男'))
 			.append($("<td></td>").append(v.phone))
 			.append($("<td></td>").append(v.rank))
 			.append($("<td></td>").append(v.age))

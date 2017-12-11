@@ -78,7 +78,7 @@
 					<div class="modal-header"><h4 class="modal-title">添加比赛</h4></div>
 					<div class="modal-body">
 						<input type="text" class="form-control addName" placeholder="比赛项目名称" maxlength="64" value="" />
-						<input type="text" class="form-control addStartDate margin-top-15 date-after" placeholder="预计开始时间" maxlength="64" value="" onclick="WdatePicker({startDate:'%y-%M-01 00:00:00',dateFmt:'yyyy-MM-dd HH:mm:ss',alwaysUseStartDate:true});"/>
+						<input type="text" class="form-control addStartDate margin-top-15 date-after" placeholder="预计开始时间" maxlength="64" value="" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:new Date()});"/>
 						
 						<textarea class="form-control addDesc margin-top-15 resize" rows="3" placeholder="会员比赛项目简介信息" maxlength="128"></textarea>
 					</div> 
