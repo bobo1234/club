@@ -90,6 +90,19 @@ public class StringUtil {
 			return null;
 		}
 	}
+	/**
+	 * end格式化模糊查询
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static String formatEndLike(String str) {
+		if (isNotEmpty(str)) {
+			return " like '%" + str + "' ";
+		} else {
+			return null;
+		}
+	}
 
 	/**
 	 * 相等查询

@@ -46,7 +46,7 @@ public class MemberServiceImpl extends AbstractDao<TeMember> implements
 		if (StringUtil.isNotEmpty(serVal)) {
 			sql += " and realname" + StringUtil.formatLike(serVal);
 			sql += " UNION SELECT  * from te_member where phone"
-					+ StringUtil.formatLike(serVal);
+					+ StringUtil.formatEndLike(serVal);
 			sql += " UNION SELECT  * from te_member where namecode"
 					+ StringUtil.formatEqual(serVal);
 		}
@@ -72,7 +72,7 @@ public class MemberServiceImpl extends AbstractDao<TeMember> implements
 		if (StringUtil.isNotEmpty(serVal)) {
 			sql += " and realname" + StringUtil.formatLike(serVal);
 			sql += " UNION SELECT 1 from te_member where phone"
-					+ StringUtil.formatLike(serVal);
+					+ StringUtil.formatEndLike(serVal);
 			sql += " UNION SELECT  1 from te_member where namecode"
 					+ StringUtil.formatEqual(serVal);
 		}
