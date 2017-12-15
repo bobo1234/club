@@ -35,6 +35,10 @@ public class ClubConst {
 	 * 男
 	 */
 	public static final int BOY = 1;
+	/**
+	 * 性别未知
+	 */
+	public static final int UNKNOWN = 0;
 
 	/**
 	 * 直板

@@ -1,12 +1,17 @@
 package com.java.back.dao.support;
 
 import java.io.Serializable;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
@@ -27,7 +32,7 @@ public abstract class AbstractDao<T> {
 	 * 查询的hql
 	 */
 	public String getHql = "from " + getEntityClass().getName() + " where 1=1 ";
-	
+
 	/**
 	 * 查询数量的hql
 	 */
@@ -391,19 +396,72 @@ public abstract class AbstractDao<T> {
 	}
 
 	/**
+	 * 执行带输出参数存储过程
+	 * 
+	 * @param callSql 存储过程的名称组合:"{call mycount(?, ?,? )}");
+	 * @param inParameters
+	 */
+	public int prepareCallAndReturn(final String callSql,
+			final Object... inParameters) {
+		try {
+			CallableStatement cs = findSession().connection().prepareCall(
+					callSql);
+			int inParametersLength = inParameters.length;
+			for (int i = 0; i < inParametersLength; i++) {
+				cs.setObject(i + 1, inParameters[i]);
+			}
+			cs.registerOutParameter(inParametersLength + 1, Types.INTEGER);
+			cs.executeUpdate();
+			return cs.getInt(inParametersLength + 1);
+		} catch (HibernateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	/**
+	 * 调用存储过程
+	 * 
+	 * @param status
+	 * @param id
+	 */
+	public void prepareCall(String status, String id) {
+		try {
+			Connection conn = findSession().connection();
+			CallableStatement proc = null;
+			proc = conn.prepareCall("{   call   set_death_age(?,   ?)   }");
+			proc.setString(1, status);
+			proc.setString(2, id);
+			proc.execute();
+		} catch (HibernateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// findSession().close();
+	}
+
+	/**
 	 * sql语句查询结果映射为map形式
 	 * 
 	 * @param sql
 	 * @return
 	 */
-	public List<Map<String, Object>> queryResultToMap(String sql,int page) {
+	public List<Map<String, Object>> queryResultToMap(String sql, int page) {
 		// TODO Auto-generated method stub
-		Query query = findSession().createSQLQuery(sql)
-				.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		Query query = findSession().createSQLQuery(sql).setResultTransformer(
+				Transformers.ALIAS_TO_ENTITY_MAP);
 		query.setFirstResult((page - 1) * PageConstant.PAGE_LIST);
 		query.setMaxResults(PageConstant.PAGE_LIST);
 		return query.list();
 	}
+
 	/**
 	 * sql语句查询结果映射为map形式
 	 * 
