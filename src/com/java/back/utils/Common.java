@@ -188,7 +188,13 @@ public class Common {
 			return 0;
 		}
 	}
-
+	
+	/**
+	 * 分组
+	 * @param list
+	 * @param quantity
+	 * @return
+	 */
 	public static List groupListByQuantity(List list, int quantity) {
 		if (list == null || list.size() == 0) {
 			return list;
