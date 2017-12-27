@@ -27,7 +27,7 @@ public class TeMember extends BaseBean {
 	/**
 	 * 微信账号
 	 */
-	private String wxaccount;
+	private String openid;
 	/**
 	 * 真实姓名
 	 */
@@ -130,13 +130,15 @@ public class TeMember extends BaseBean {
 		this.rank = rank;
 	}
 
-	public String getWxaccount() {
-		return wxaccount;
+	public String getOpenid() {
+		return openid;
 	}
 
-	public void setWxaccount(String wxaccount) {
-		this.wxaccount = wxaccount;
+
+	public void setOpenid(String openid) {
+		this.openid = openid;
 	}
+
 
 	public String getHeadimgurl() {
 		return headimgurl;
