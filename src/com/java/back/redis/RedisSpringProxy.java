@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
@@ -15,7 +14,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
 /**
@@ -42,7 +40,45 @@ public class RedisSpringProxy {
 	}
 	
 	/**
+	 * 将对象放进redis
+	 * @param key
+	 * @param value
+	 */
+	public void saveObject(final String key, final Object value) {
+		redisTemplate.execute(new RedisCallback<Object>() {
+			@Override
+			public Object doInRedis(RedisConnection connection)
+					throws DataAccessException {
+				connection.set(serializeKey(key), SerializeUtil.serialize(value));
+				return null;
+			}
+		});
+	}
+	
+	/**
+	 * 通过key获取对象
+	 * @param key
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T getObject(final String key,Class<T> beanCalss) {
+		return redisTemplate.execute(new RedisCallback<T>() {
+			@Override
+			public T doInRedis(RedisConnection connection)
+					throws DataAccessException {
+				byte[] keyBytes = serializeKey(key);
+				if (connection.exists(keyBytes)) {
+					byte[] valueBytes = connection.get(keyBytes);
+					return (T) SerializeUtil.unserialize(valueBytes);
+				}
+				return null;
+			}
+		});
+	}
+
+	/**
 	 * 将redis里指定的key的value加一
+	 * 
 	 * @param key
 	 * @param value
 	 */
@@ -54,31 +90,35 @@ public class RedisSpringProxy {
 			}
 		});
 	}
-	
+
 	/**
 	 * 写入缓存，设置失效时间
 	 * 
 	 * @param key
 	 * @param value
-	 * @param expireTime 单位:秒
+	 * @param expireTime
+	 *            单位:秒
 	 */
-	public void saveEx(final String key, final Object value, final Long expireTime) {
+	public void saveEx(final String key, final Object value,
+			final Long expireTime) {
 		redisTemplate.execute(new RedisCallback<Object>() {
 			@Override
 			public Object doInRedis(RedisConnection connection)
 					throws DataAccessException {
-				connection.setEx(serializeKey(key), expireTime, serializeValue(value));
+				connection.setEx(serializeKey(key), expireTime,
+						serializeValue(value));
 				return null;
 			}
 		});
-//		try {
-//			ValueOperations<Serializable, Serializable> operations = redisTemplate
-//					.opsForValue();
-//			operations.set(key, value);
-//			redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+		// try {
+		// ValueOperations<Serializable, Serializable> operations =
+		// redisTemplate
+		// .opsForValue();
+		// operations.set(key, value);
+		// redisTemplate.expire(key, expireTime, TimeUnit.SECONDS);
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
 	}
 
 	/**
@@ -343,6 +383,41 @@ public class RedisSpringProxy {
 				return count;
 			}
 
+		});
+	}
+	
+	/**
+	 * 获取List长度
+	 * @param key
+	 * @return
+	 */
+	public Long LLen(final String key) {
+		return redisTemplate.execute(new RedisCallback<Long>() {
+			@Override
+			public Long doInRedis(RedisConnection connection) {
+				return connection.lLen(serializeKey(key));
+			}
+		});
+	}
+
+	/**
+	 * 根据索引取出数据
+	 * @param key
+	 * @param index
+	 * @return
+	 */
+	public Object lIndex(final String key, final long index) {
+		return redisTemplate.execute(new RedisCallback<Object>() {
+			@Override
+			public Object doInRedis(RedisConnection connection)
+					throws DataAccessException {
+				byte[] keyBytes = serializeKey(key);
+				if (connection.exists(keyBytes)) {
+					byte[] valueBytes = connection.lIndex(keyBytes, index);
+					return deserializeValue(valueBytes);
+				}
+				return null;
+			}
 		});
 	}
 
