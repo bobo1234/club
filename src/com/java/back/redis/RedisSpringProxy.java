@@ -15,11 +15,13 @@ import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.stereotype.Component;
 
 /**
  * spring 代理jedis客户端功能与redis server通信, 依赖spring-data-redis-1.0.2.jar包.
  * 
  */
+@Component("redisSpringProxy")
 public class RedisSpringProxy {
 
 	@Resource

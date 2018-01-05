@@ -13,10 +13,6 @@ import redis.clients.util.SafeEncoder;
 
 import com.java.back.utils.Config;
 
-/**
- * @author LiHaoyang
- * @version crateTime: 2016年5月13日 Class Explain:JedisUtil
- */
 public class JedisUtil {
 
 	// private Logger log = Logger.getLogger(this.getClass());
@@ -24,7 +20,6 @@ public class JedisUtil {
 	private final int expire = 60000;
 	/** 操作Key的方法 */
 	public Keys KEYS;
-
 	/** 对存储结构为String类型的操作 */
 	public Strings STRINGS;
 	/** 对存储结构为List类型的操作 */
@@ -38,29 +33,28 @@ public class JedisUtil {
 	private static JedisPool jedisPool = null;
 
 	private JedisUtil() {
-		// System.out.println("0");
+
+	}
+
+	static {
 		JedisPoolConfig config = new JedisPoolConfig();
 		// 控制一个pool可分配多少个jedis实例，通过pool.getResource()来获取；
-		// 如果赋值为-1，则表示不限制；如果pool已经分配了maxActive个jedis实例，则此时pool的状态为exhausted(耗尽)。
-		// config.setMaxTotal(-1);
 		// 控制一个pool最多有多少个状态为idle(空闲的)的jedis实例。
-		config.setMaxIdle(1000000);
+		config.setMaxIdle(5);
 		// 表示当borrow(引入)一个jedis实例时，最大的等待时间，如果超过等待时间，则直接抛出JedisConnectionException；
-		config.setMaxWait(1000 * 100000);
+		config.setMaxWait(1000 * 100);
 		// 在borrow一个jedis实例时，是否提前进行validate操作；如果为true，则得到的jedis实例均是可用的；
 		config.setTestOnBorrow(true);
 
 		// redis如果设置了密码：
-		/**
-		 * 本地
-		 */
-		String name = "redis";
-		jedisPool = new JedisPool(config, Config.getValue(name, "redis.host"),
-				Integer.parseInt(Config.getValue(name, "redis.port")), 10000,
-				Config.getValue(name, "redis.password"));
+
+		jedisPool = new JedisPool(config,
+				Config.getValue("redis", "redis.host"), Integer.parseInt(Config
+						.getValue("redis", "redis.port")), 10000,
+				Config.getValue("redis", "redis.password"));
+
 		// redis未设置了密码：
-		// jedisPool = new JedisPool(config, Config.REDIS_IP,
-		// Config.REDIS_PORT);
+		// jedisPool = new JedisPool(config, "172.30.37.73", 6379);
 	}
 
 	public JedisPool getPool() {
@@ -74,6 +68,17 @@ public class JedisUtil {
 	 */
 	public Jedis getJedis() {
 		return jedisPool.getResource();
+	}
+
+	private static final JedisUtil jedisUtil = new JedisUtil();
+
+	/**
+	 * 获取JedisUtil实例
+	 * 
+	 * @return
+	 */
+	public static JedisUtil getInstance() {
+		return jedisUtil;
 	}
 
 	/**
@@ -1334,20 +1339,6 @@ public class JedisUtil {
 			returnJedis(jedis);
 			return len;
 		}
-
-		/**
-		 * 删除
-		 * 
-		 * @param String
-		 *            key
-		 * @return value值得长度
-		 * */
-		public long del(String key) {
-			Jedis jedis = getJedis();
-			long len = jedis.del(key);
-			returnJedis(jedis);
-			return len;
-		}
 	}
 
 	// *******************************************Lists*******************************************//
@@ -1655,6 +1646,26 @@ public class JedisUtil {
 		public String ltrim(String key, int start, int end) {
 			return ltrim(SafeEncoder.encode(key), start, end);
 		}
+	}
+
+	public static void main(String[] args) {
+		JedisUtil jedisUtil = JedisUtil.getInstance();
+
+		JedisUtil.Strings strings = jedisUtil.new Strings();
+		strings.set("nnn", "nnnn");
+		System.out.println("-----" + strings.get("nnn"));
+
+		Jedis jedis = JedisUtil.getInstance().getJedis();
+		for (int i = 0; i < 10; i++) {
+			jedis.set("test", "test");
+			System.out.println(i + "==" + jedis.get("test"));
+
+		}
+
+		Keys keys2 = jedisUtil.new Keys();
+		keys2.flushAll();
+		
+		JedisUtil.getInstance().returnJedis(jedis);
 	}
 
 }
